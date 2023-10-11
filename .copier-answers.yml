@@ -7,16 +7,16 @@ documentation: true
 email: 34j.95a2p@simplelogin.com
 full_name: 34j
 github_username: 34j
-initial_commit: true
+initial_commit: false
 open_source_license: MIT
-open_with_vscode: true
+open_with_vscode: false
 package_name: sklearn_utilities
 project_name: Sklearn Utilities
 project_short_description: Utilities for scikit-learn.
 project_slug: sklearn-utilities
-run_poetry_install: true
-setup_github: true
-setup_pre_commit: true
-setup_venv: true
+run_poetry_install: false
+setup_github: false
+setup_pre_commit: false
+setup_venv: false
 venv_version: '3.10'
 
