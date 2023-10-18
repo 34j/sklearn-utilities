@@ -1,14 +1,12 @@
-from typing import Any, Generic, Sequence, TypeVar
+from typing import Any, Generic, Sequence
 
 import numpy as np
 from joblib import Parallel, delayed
-from numpy.typing import NDArray
 from pandas import DataFrame, Series, concat
 from sklearn.base import BaseEstimator, TransformerMixin, check_is_fitted, clone
 from typing_extensions import Self
 
-TEstimator = TypeVar("TEstimator", bound=Any)
-TX = TypeVar("TX", DataFrame, NDArray[Any])
+from .types import TX, TEstimator
 
 
 def generate_new_prefix(X: DataFrame, prefix: str = "y_pred_") -> str:
