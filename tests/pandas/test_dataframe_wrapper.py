@@ -2,10 +2,10 @@ from sklearn.datasets import load_diabetes
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 
-from sklearn_utilities.dataframe_wrapper import DataFrameWrapper
+from sklearn_utilities.pandas.dataframe_wrapper import DataFrameWrapper
 
 
-def test_regressor():
+def test_regressor() -> None:
     X, y = load_diabetes(return_X_y=True, as_frame=True)
     X_train, X_test, y_train, y_test = train_test_split(X, y)
     est = LinearRegression()

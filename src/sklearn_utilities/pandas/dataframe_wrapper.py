@@ -5,7 +5,7 @@ from typing import Any, Generic, TypeVar
 from numpy.typing import NDArray
 from pandas import DataFrame, Series
 
-from .estimator_wrapper import EstimatorWrapperBase, TEstimator
+from ..estimator_wrapper import EstimatorWrapperBase, TEstimator
 
 TArray = TypeVar("TArray", bound="DataFrame | Series | NDArray[Any]")
 
