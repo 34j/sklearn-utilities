@@ -4,7 +4,7 @@ from pandas import DataFrame
 from sklearn.base import BaseEstimator, TransformerMixin, check_is_fitted
 from typing_extensions import Self
 
-from .id_transformer import IdTransformer
+from ..id_transformer import IdTransformer
 
 
 class ExcludedColumnTransformerPandas(BaseEstimator, TransformerMixin):

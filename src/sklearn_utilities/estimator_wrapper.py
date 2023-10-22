@@ -1,8 +1,8 @@
-from typing import Any, Generic, TypeVar
+from typing import Any, Generic
 
 from sklearn.base import BaseEstimator, MetaEstimatorMixin
 
-TEstimator = TypeVar("TEstimator", bound=Any)
+from .types import TEstimator
 
 
 class EstimatorWrapperBase(BaseEstimator, MetaEstimatorMixin, Generic[TEstimator]):
