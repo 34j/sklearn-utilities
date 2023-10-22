@@ -40,6 +40,21 @@ Install this via pip (or your favourite package manager):
 pip install sklearn-utilities
 ```
 
+## API
+
+- `EstimatorWrapperBase`: base class for wrappers. Redirects all attributes which are not in the wrapper to the wrapped estimator.
+- `DataFrameWrapper`: tries to convert every estimator output to a pandas DataFrame or Series.
+- `FeatureUnionPandas`: a `FeatureUnion` that works with pandas DataFrames.
+- `IncludedColumnTransformerPandas`, `ExcludedColumnTransformerPandas`: select columns by name.
+- `AppendPredictionToX`: appends the prediction of y to X.
+- `AppendXPredictionToX`: appends the prediction of X to X.
+- `DropByNoisePrediction`: drops columns which has high importance in predicting noise.
+- `DropMissingColumns`: drops columns with missing values above a threshold.
+- `DropMissingRowsY`: drops rows with missing values in y. Use `feature_engine.DropMissingData` for X.
+- `IdTransformer`: a transformer that does nothing.
+- `RecursiveFitSubtractRegressor`: a regressor that recursively fits a regressor and subtracts the prediction from the target.
+- `until_event()`, `since_event()`: calculates the time since or until events (`Series[bool]`)
+
 ## Contributors ✨
 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
