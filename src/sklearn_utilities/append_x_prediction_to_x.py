@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Any, Generic, Hashable, Sequence
 
 from pandas import DataFrame, Series, concat

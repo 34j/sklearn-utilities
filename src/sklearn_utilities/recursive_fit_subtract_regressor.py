@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Any, Generic, Mapping, Sequence
 
 import numpy as np
@@ -37,7 +39,7 @@ class RecursiveFitSubtractRegressor(
         X: Any,
         y: Any,
         predict_params: Mapping[str, Any] | None = None,
-        **fit_params: Any
+        **fit_params: Any,
     ) -> Self:
         if predict_params is None:
             predict_params = {}

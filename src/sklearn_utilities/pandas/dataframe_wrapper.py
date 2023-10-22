@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import inspect
 import re
 from typing import Any, Generic, TypeVar
@@ -36,7 +38,7 @@ class DataFrameWrapper(EstimatorWrapperBase[TEstimator], Generic[TEstimator]):
         self,
         estimator: TEstimator,
         *,
-        pattern: str = "^(:?fit|transform|fit_transform|predict|predict_var)$"
+        pattern: str = "^(:?fit|transform|fit_transform|predict|predict_var)$",
     ) -> None:
         """A wrapper for estimators that returns pandas DataFrame or Series
         instead of numpy arrays for the methods that have "X" as an argument

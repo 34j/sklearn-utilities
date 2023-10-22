@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from numbers import Real
 from typing import Any, Literal
 
