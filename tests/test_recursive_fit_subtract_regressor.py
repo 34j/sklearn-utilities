@@ -3,7 +3,9 @@ from sklearn.datasets import load_diabetes
 from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import train_test_split
 
-from sklearn_utilities.recursive_fit_regressor import RecursiveFitSubtractRegressor
+from sklearn_utilities.recursive_fit_subtract_regressor import (
+    RecursiveFitSubtractRegressor,
+)
 
 
 def test_regressor():
