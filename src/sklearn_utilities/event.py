@@ -1,10 +1,12 @@
+from __future__ import annotations
+
 import numpy as np
 import pandas as pd
 from pandas import DatetimeIndex
 from pandas.core.series import Series
 
 
-def since_event(event: "Series[bool]") -> "Series[float]":
+def since_event(event: Series[bool]) -> Series[float]:
     """Calculate the elapsed time since the last event.
 
     Parameters
@@ -34,7 +36,7 @@ def since_event(event: "Series[bool]") -> "Series[float]":
     return res
 
 
-def until_event(event: "Series[bool]") -> "Series[float]":
+def until_event(event: Series[bool]) -> Series[float]:
     """Calculate the elapsed time until the next event.
 
     Parameters
