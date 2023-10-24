@@ -13,6 +13,7 @@ from tqdm_joblib import tqdm_joblib
 from typing_extensions import Self
 
 from ..types import TEstimator
+from ..utils import drop_X_y
 from .dataframe_wrapper import to_frame_or_series_tuple
 
 LOG = getLogger(__name__)
@@ -29,15 +30,6 @@ TX = TypeVar("TX", bound="DataFrame | Series")
 TY = TypeVar("TY", bound="DataFrame | Series")
 
 
-def _intersect_X_y(X: TX, y: TY) -> tuple[TX, TY]:
-    idx = X.index.intersection(y.index)
-    return X.loc[idx], y.loc[idx]
-
-
-def _drop_X_y(X: TX, y: TY) -> tuple[TX, TY]:
-    return _intersect_X_y(X, y.dropna())
-
-
 def _fit_X_y(
     estimator: Any,
     X: DataFrame,
@@ -47,7 +39,7 @@ def _fit_X_y(
     safe: bool = False,
     **fit_params: Any,
 ) -> BaseEstimator:
-    X, y = _drop_X_y(X, y)
+    X, y = drop_X_y(X, y)
     LOG.debug(f"Length of {y.name}: {len(y)}")
     estimator = clone(estimator, safe=safe)
     if pass_numpy:
