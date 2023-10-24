@@ -89,7 +89,6 @@ class DataFrameWrapper(EstimatorWrapperBase[TEstimator], Generic[TEstimator]):
         self.pattern_y = pattern_y
 
     def _save_y_columns_or_name(self, y: Any) -> None:
-        print(y)
         if isinstance(y, Series):
             self.y_columns_or_name = y.name
         elif isinstance(y, DataFrame):
