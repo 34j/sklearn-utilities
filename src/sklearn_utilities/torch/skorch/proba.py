@@ -68,11 +68,12 @@ def _get_ts_axis(y_pred_shape: torch.Size, y_true_shape: torch.Size) -> int:
     y_true_shape = y_true_shape[1:]
 
     # find the shape difference between y_pred and y_true
-    # if ts and y_true have the same shape, then ts_axis = -1
+    # if Ts = Ny (y_true_shape[1] = y_true_shape[2]),
+    # then ts_axis = -1
     ts_axis = -1
     for i, s in enumerate(y_pred_shape):
-        if s in y_true_shape:
-            ts_axis = i
+        if s not in y_true_shape:
+            ts_axis = i + 1
             break
     return ts_axis
 
@@ -127,7 +128,9 @@ class AsymmetricLosses(nn.Module):
 
         # calculate losses
         losses = []
-        for y_pred_q, loss in zip(y_pred.transpose(0, self.ts_axis_), self.losses):
+        for y_pred_q, loss in zip(
+            torch.moveaxis(y_pred, self.ts_axis_, 0), self.losses
+        ):
             losses.append(loss(y_pred_q, y_true))
         return torch.stack(losses).mean()
 
@@ -236,6 +239,9 @@ class SkorchReshaperProba(  # type: ignore
 
         Use `AsymmetricLosses` for NeuralNet.criterion.
 
+        `estimator.module` may return [B, Ts * NY] or [B, Ts, NY] or [B, NY, Ts].
+        If NY = Ts, assumes that [B, NY, Ts] is returned.
+
         Parameters
         ----------
         estimator : TEstimator
@@ -279,6 +285,9 @@ class SkorchCNNReshaperProba(  # type: ignore
         C = 1: channels, B: batch, H: window, F: features, NY: number of outputs
 
         Use `AsymmetricLosses` for NeuralNet.criterion.
+
+        `estimator.module` may return [B, Ts * NY] or [B, Ts, NY] or [B, NY, Ts].
+        If NY = Ts, assumes that [B, NY, Ts] is returned.
 
         Parameters
         ----------

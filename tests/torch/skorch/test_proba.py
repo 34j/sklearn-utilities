@@ -17,7 +17,7 @@ batch = 4
 multioutput = 2
 
 n_ts = 5
-ts = torch.linspace(0.1, 1, n_ts)
+ts = torch.linspace(0.1, 0.9, n_ts)
 
 
 def test_ln_errors():
@@ -39,27 +39,32 @@ def test_asymmetric_loss():
 
 
 def test_asymmetric_losses():
-    ts = torch.arange(0.1, 1, 0.1)
     loss = AsymmetricLosses(ts=ts)
-    y_pred = torch.randn(batch, len(ts))
+    y_pred = torch.randn(batch, n_ts)
     y_true = torch.randn(batch)
     loss_ = loss(y_pred, y_true)
     assert loss_.shape == torch.Size([])
 
 
 def test_asymmetric_losses2():
-    ts = torch.arange(0.1, 1, 0.1)
     loss = AsymmetricLosses(ts=ts)
-    y_pred = torch.randn(batch, len(ts))
+    y_pred = torch.randn(batch, n_ts)
     y_true = torch.randn(batch, 1)
     loss_ = loss(y_pred, y_true)
     assert loss_.shape == torch.Size([])
 
 
 def test_asymmetric_losses_multioutput():
-    ts = torch.arange(0.1, 1, 0.1)
     loss = AsymmetricLosses(ts=ts)
-    y_pred = torch.randn(batch, multioutput, len(ts))
+    y_pred = torch.randn(batch, multioutput, n_ts)
+    y_true = torch.randn(batch, multioutput)
+    loss_ = loss(y_pred, y_true)
+    assert loss_.shape == torch.Size([])
+
+
+def test_asymmetric_losses_multioutput2():
+    loss = AsymmetricLosses(ts=ts)
+    y_pred = torch.randn(batch, n_ts, multioutput)
     y_true = torch.randn(batch, multioutput)
     loss_ = loss(y_pred, y_true)
     assert loss_.shape == torch.Size([])
