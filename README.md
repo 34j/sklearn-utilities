@@ -56,10 +56,13 @@ pip install sklearn-utilities
 - `RecursiveFitSubtractRegressor`: a regressor that recursively fits a regressor and subtracts the prediction from the target.
 - `SmartMultioutputEstimator`: a `MultiOutputEstimator` that supports tuple of arrays in `predict()` and supports pandas `Series` and `DataFrame`.
 - `until_event()`, `since_event()`: calculates the time since or until events (`Series[bool]`)
+- `ComposeVarEstimator`: compose mean and std/var estimators.
+- `DummyRegressorVar`: `DummyRegressor` that returns 1.0 for std/var.
+- `TransformedTargetRegressorVar`: `TransformedTargetRegressor` with std/var support.
 
 ### `sklearn_utilities.dataset`
 
-- `add_missing_values()` adds missing values to a dataset.
+- `add_missing_values()`: adds missing values to a dataset.
 
 ### `sklearn_utilities.torch`
 
