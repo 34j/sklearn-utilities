@@ -7,8 +7,8 @@ from numpy.lib.stride_tricks import sliding_window_view
 from skorch import NeuralNet
 from typing_extensions import Self
 
-from .estimator_wrapper import EstimatorWrapperBase
-from .types import TX, TY
+from sklearn_utilities.estimator_wrapper import EstimatorWrapperBase
+from sklearn_utilities.types import TX, TY
 
 TEstimator = TypeVar("TEstimator", bound=NeuralNet)
 
@@ -52,8 +52,9 @@ class SkorchReshaper(EstimatorWrapperBase[TEstimator], Generic[TEstimator]):
         X_: np.ndarray = self._validate_data(X, force_all_finite=True)
         X_ = X_.astype(np.float32)
         y = self.estimator.predict(X_, **predict_params)
-        if self.y_ndim_ == 1:
-            y = y.squeeze(axis=1)
+        if self.y_ndim_ == 1 and y.shape[1] == 1:
+            if y.shape[1] == 1:
+                y = y.squeeze(axis=1)
         return y
 
 
@@ -74,7 +75,7 @@ class SkorchCNNReshaper(EstimatorWrapperBase[TEstimator], Generic[TEstimator]):
         window_size : int | None
             The size of the sliding window.
             Make sure that CNN kernel size is equal or larger than this.
-            I
+            If None, no sliding window is applied.
         """
         self.estimator = estimator
         self.window_size = window_size
@@ -113,5 +114,6 @@ class SkorchCNNReshaper(EstimatorWrapperBase[TEstimator], Generic[TEstimator]):
         X_ = np.expand_dims(X_, axis=1)
         y = self.estimator.predict(X_, **predict_params)
         if self.y_ndim_ == 1:
-            y = y.squeeze(axis=1)
+            if y.shape[1] == 1:
+                y = y.squeeze(axis=1)
         return y

@@ -5,7 +5,7 @@ from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import train_test_split
 from skorch import NeuralNet
 
-from sklearn_utilities.skorch import SkorchCNNReshaper, SkorchReshaper
+from sklearn_utilities.torch.skorch.reshaper import SkorchCNNReshaper, SkorchReshaper
 
 X, y = load_diabetes(return_X_y=True, as_frame=True)
 X_train, X_test, y_train, y_test = train_test_split(X, y)
@@ -35,4 +35,4 @@ def test_cnn_reshaper():
     )
     est.fit(X_train, y_train)
     y_pred = est.predict(X_test)
-    mean_squared_error(y_test[est.window_size - 1 :], y_pred)
+    mean_squared_error(y_test[5 - 1 :], y_pred)
