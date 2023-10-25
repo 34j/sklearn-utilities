@@ -15,6 +15,12 @@ from .pandas import (
     IncludedColumnTransformerPandas,
     SmartMultioutputEstimator,
 )
+from .proba import (
+    ComposeVarEstimator,
+    DummyRegressorVar,
+    PipelineVar,
+    TransformedTargetEstimatorVar,
+)
 from .recursive_fit_subtract_regressor import RecursiveFitSubtractRegressor
 
 __all__ = [
@@ -35,4 +41,8 @@ __all__ = [
     "RecursiveFitSubtractRegressor",
     "IntersectXY",
     "SmartMultioutputEstimator",
+    "ComposeVarEstimator",
+    "DummyRegressorVar",
+    "TransformedTargetEstimatorVar",
+    "PipelineVar",
 ]
