@@ -46,7 +46,7 @@ sphinx-rtd-theme = ">=1.0"
 
 [tool.poetry.group.torch.dependencies]
 skorch = "^0.15.0"
-torch = "^2.1.0"
+torch = "==2.0.0||>2.1.0"
 
 [tool.semantic_release]
 branch = "main"
