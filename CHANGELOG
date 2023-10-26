@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.2.2 (2023-10-26)
+
+### Fix
+
+- Fix multiple problems (#9) ([`b0eb583`](https://github.com/34j/sklearn-utilities/commit/b0eb5831e7076395bd2b058a31dc1bca3c967a1e))
+
 ## v0.2.1 (2023-10-26)
 
 ### Fix
