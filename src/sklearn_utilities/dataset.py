@@ -9,6 +9,7 @@ from .types import TX, TY
 
 def add_missing_values(
     dataset: tuple[TX, TY],
+    *,
     missing_rate_x: float = 0.5,
     missing_rate_y: float = 0.5,
     random_state: RandomState | int | None = None,
