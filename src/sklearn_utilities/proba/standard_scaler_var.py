@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Any, Literal
 
 from sklearn.discriminant_analysis import StandardScaler
@@ -12,7 +14,7 @@ class StandardScalerVar(StandardScaler):
         copy: bool = True,
         with_mean: bool = True,
         with_std: bool = True,
-        var_type: Literal["std", "var"] = "var"
+        var_type: Literal["std", "var"] = "var",
     ) -> None:
         super().__init__(copy=copy, with_mean=with_mean, with_std=with_std)
         self.var_type = var_type
