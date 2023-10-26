@@ -97,8 +97,12 @@ def wrap_torch(func: Callable[..., Any]) -> Callable[..., Any]:
 
 class PCATorch(nn.Module, BaseEstimator, TransformerMixin):
     """PCA using torch.linalg.svd.
-    Might be faster than sklearn.decomposition.PCA
-    if using GPU, but the algorithm is less efficient.
+
+    If using CUDA, the first call may take significantly long time (~2s)
+    due to CUDA initialization, but the subsequent calls should be faster
+    than sklearn.decomposition.PCA, although the algorithm might be less efficient.
+
+    Call `python -m sklearn_utilities.torch.pca 10000x100` to test the performance.
 
     If we could easily replace `np` with `torch` in sklearn...
 
@@ -200,3 +204,73 @@ class PCATorch(nn.Module, BaseEstimator, TransformerMixin):
     def inverse_transform(self, X: torch.Tensor) -> torch.Tensor:
         check_is_fitted(self, ["mean_", "components_"])
         return (X @ self.components_) + self.mean_
+
+
+def pca_performance_test() -> None:
+    import sys
+    from time import perf_counter
+
+    import torch
+    from sklearn.datasets import make_regression
+    from sklearn.decomposition import PCA
+
+    if len(sys.argv) < 2:
+        size = (1000, 1000)
+    else:
+        size = tuple(int(length) for length in sys.argv[1].split("x"))  # type: ignore
+
+    if not torch.cuda.is_available():
+        raise RuntimeError("CUDA is not available")
+
+    torch.set_num_threads(32)
+    torch.backends.cudnn.benchmark = True
+    torch.set_float32_matmul_precision("medium")
+
+    start = perf_counter()
+    a = torch.randn(1000, 1000, device="cuda")
+    b = torch.randn(1000, 1000, device="cuda")
+    torch.matmul(a, b)
+    elapsed = perf_counter() - start
+
+    print(f"Warming up torch: {elapsed:g}[s]")
+
+    elapsed_dict = {}
+
+    X, _ = make_regression(n_samples=size[0], n_features=size[1])
+
+    pcas = {
+        "sklearn": PCA(n_components=2),
+        "torch-cuda": PCATorch(n_components=2, qr=False, svd_flip=False, device="cuda"),
+        "torch-cuda-svd_flip": PCATorch(
+            n_components=2, qr=False, svd_flip=True, device="cuda"
+        ),
+        "torch-cuda-qr": PCATorch(
+            n_components=2, qr=True, svd_flip=False, device="cuda"
+        ),
+        "torch-cuda-qr-svd_flip": PCATorch(
+            n_components=2, qr=True, svd_flip=True, device="cuda"
+        ),
+        "torch-cpu": PCATorch(n_components=2, qr=False, svd_flip=False, device="cpu"),
+        "torch-cpu-svd_flip": PCATorch(
+            n_components=2, qr=False, svd_flip=True, device="cpu"
+        ),
+        "torch-cpu-qr": PCATorch(n_components=2, qr=True, svd_flip=False, device="cpu"),
+        "torch-cpu-qr-svd_flip": PCATorch(
+            n_components=2, qr=True, svd_flip=True, device="cpu"
+        ),
+    }
+
+    for name, pca in pcas.items():
+        for i in range(2):
+            start = perf_counter()
+            pca.fit(X)
+            pca.transform(X)
+            elapsed = perf_counter() - start
+            print(f"{name}: {elapsed:g}[s]")
+        elapsed_dict[name] = elapsed
+
+    print(elapsed_dict)
+
+
+if __name__ == "__main__":
+    pca_performance_test()
