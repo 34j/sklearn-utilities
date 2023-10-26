@@ -7,11 +7,19 @@ from .drop_missing_rows_y import DropMissingRowsY
 from .estimator_wrapper import EstimatorWrapperBase
 from .event import since_event, until_event
 from .id_transformer import IdTransformer
+from .intersect import IntersectXY
 from .pandas import (
     DataFrameWrapper,
     ExcludedColumnTransformerPandas,
     FeatureUnionPandas,
     IncludedColumnTransformerPandas,
+    SmartMultioutputEstimator,
+)
+from .proba import (
+    ComposeVarEstimator,
+    DummyRegressorVar,
+    PipelineVar,
+    TransformedTargetEstimatorVar,
 )
 from .recursive_fit_subtract_regressor import RecursiveFitSubtractRegressor
 
@@ -31,4 +39,10 @@ __all__ = [
     "since_event",
     "IdTransformer",
     "RecursiveFitSubtractRegressor",
+    "IntersectXY",
+    "SmartMultioutputEstimator",
+    "ComposeVarEstimator",
+    "DummyRegressorVar",
+    "TransformedTargetEstimatorVar",
+    "PipelineVar",
 ]

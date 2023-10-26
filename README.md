@@ -51,9 +51,30 @@ pip install sklearn-utilities
 - `DropByNoisePrediction`: drops columns which has high importance in predicting noise.
 - `DropMissingColumns`: drops columns with missing values above a threshold.
 - `DropMissingRowsY`: drops rows with missing values in y. Use `feature_engine.DropMissingData` for X.
+- `IntersectXY`: drops rows where the index of X and y do not intersect. Use with `feature_engine.DropMissingData`.
 - `IdTransformer`: a transformer that does nothing.
 - `RecursiveFitSubtractRegressor`: a regressor that recursively fits a regressor and subtracts the prediction from the target.
+- `SmartMultioutputEstimator`: a `MultiOutputEstimator` that supports tuple of arrays in `predict()` and supports pandas `Series` and `DataFrame`.
 - `until_event()`, `since_event()`: calculates the time since or until events (`Series[bool]`)
+- `ComposeVarEstimator`: compose mean and std/var estimators.
+- `DummyRegressorVar`: `DummyRegressor` that returns 1.0 for std/var.
+- `TransformedTargetRegressorVar`: `TransformedTargetRegressor` with std/var support.
+
+### `sklearn_utilities.dataset`
+
+- `add_missing_values()`: adds missing values to a dataset.
+
+### `sklearn_utilities.torch`
+
+- `PCATorch`: faster PCA using PyTorch with GPU support.
+
+#### `sklearn_utilities.torch.skorch`
+
+- `SkorchReshaper`, `SkorchCNNReshaper`: reshape X and y for `nn.Linear` and `nn.Conv1d/2d` respectively. (For `nn.Conv2d`, uses `np.sliding_window_view()`.)
+
+## See also
+
+- [ml-tooling/best-of-ml-python](https://github.com/ml-tooling/best-of-ml-python)
 
 ## Contributors ✨
 
