@@ -33,7 +33,7 @@ class TransformedTargetEstimatorVar(
 
     def predict(self, X: TX, **predict_params: Any) -> TY | tuple[TY, TY]:
         if predict_params.get("return_std", False):
-            pred, pred_std = self.estimator.predict_var(X, **predict_params)
+            pred, pred_std = self.estimator.predict(X, **predict_params)
             pred, pred_std = DataFrame(pred), DataFrame(pred_std)
             return self.transformer.inverse_transform(pred).squeeze(
                 axis=1
