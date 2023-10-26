@@ -24,7 +24,7 @@ def test_pca_implementation():
     X_skleran_test = pca_sklearn.transform(X_test)
 
     # Fit PCA using PCATorch
-    pca_torch = PCATorch(n_components=2)
+    pca_torch = PCATorch(n_components=2, qr=True, svd_flip=True)
     pca_torch.fit(X_train)
     X_torch = pca_torch.transform(X_train)
     X_torch_test = pca_torch.transform(X_test)

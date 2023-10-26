@@ -97,8 +97,12 @@ def wrap_torch(func: Callable[..., Any]) -> Callable[..., Any]:
 
 class PCATorch(nn.Module, BaseEstimator, TransformerMixin):
     """PCA using torch.linalg.svd.
-    Might be faster than sklearn.decomposition.PCA
-    if using GPU, but the algorithm is less efficient.
+
+    If using CUDA, the first call may take significantly long time (~2s)
+    due to CUDA initialization, but the subsequent calls should be faster
+    than sklearn.decomposition.PCA, although the algorithm might be less efficient.
+
+    Call `python -m sklearn_utilities.torch.pca 10000x100` to test the performance.
 
     If we could easily replace `np` with `torch` in sklearn...
 
@@ -116,6 +120,7 @@ class PCATorch(nn.Module, BaseEstimator, TransformerMixin):
         n_components: int | None = None,
         *,
         qr: bool = False,
+        svd_flip: bool | None = None,
         device: torch.device | int | str = "cuda"
         if torch.cuda.is_available()
         else "cpu",
@@ -134,8 +139,11 @@ class PCATorch(nn.Module, BaseEstimator, TransformerMixin):
             Number of components to keep, by default None
         qr : bool, optional
             Whether to use QR decomposition, by default False
-            If True, the result will be different from
-            sklearn.decomposition.PCA
+        svd_flip : bool | None, optional
+            Whether to flip the sign of the components, by default None
+            If None, the sign will be flipped if `qr` is False
+            If svd_flip is not used, the results might not be consistent
+            with sklearn.decomposition.PCA
         device : torch.device | int | str, optional
             The device to use, by default
             `"cuda" if torch.cuda.is_available() else "cpu"`
@@ -153,6 +161,7 @@ class PCATorch(nn.Module, BaseEstimator, TransformerMixin):
         super().__init__()
         self.n_components = n_components
         self.qr = qr
+        self.svd_flip = svd_flip
         self.device = device
         self.dtype = dtype
         self.kwargs = kwargs
@@ -168,12 +177,20 @@ class PCATorch(nn.Module, BaseEstimator, TransformerMixin):
             d = min(self.n_components, d)
         self.register_buffer("mean_", X.mean(0, keepdim=True))
         Xc = X - self.mean_
+        to_svd_flip = self.svd_flip
+        if to_svd_flip is None:
+            to_svd_flip = not self.qr
         if self.qr:
-            _, R = torch.linalg.qr(Xc)
+            Q, R = torch.linalg.qr(Xc)
             U, _, Vt = torch.linalg.svd(R, full_matrices=False)
+            if to_svd_flip:
+                U, Vt = svd_flip(Q @ U, Vt)
         else:
             U, _, Vt = torch.linalg.svd(Xc, full_matrices=False)
-        U, Vt = svd_flip(U, Vt)  # to be deterministic and consistent with sklearn
+            if to_svd_flip:
+                U, Vt = svd_flip(
+                    U, Vt
+                )  # to be deterministic and consistent with sklearn
         self.register_buffer("components_", Vt[:d])
         return self
 
@@ -181,9 +198,79 @@ class PCATorch(nn.Module, BaseEstimator, TransformerMixin):
     def transform(self, X: torch.Tensor) -> torch.Tensor:
         check_is_fitted(self, ["mean_", "components_"])
         Xc = X - self.mean_
-        return torch.matmul(Xc, self.components_.t())  # V.T == inverse(V)
+        return Xc @ self.components_.T
 
     @wrap_torch
     def inverse_transform(self, X: torch.Tensor) -> torch.Tensor:
         check_is_fitted(self, ["mean_", "components_"])
-        return torch.matmul(X, self.components_) + self.mean_
+        return (X @ self.components_) + self.mean_
+
+
+def pca_performance_test() -> None:
+    import sys
+    from time import perf_counter
+
+    import torch
+    from sklearn.datasets import make_regression
+    from sklearn.decomposition import PCA
+
+    if len(sys.argv) < 2:
+        size = (1000, 1000)
+    else:
+        size = tuple(int(length) for length in sys.argv[1].split("x"))  # type: ignore
+
+    if not torch.cuda.is_available():
+        raise RuntimeError("CUDA is not available")
+
+    torch.set_num_threads(32)
+    torch.backends.cudnn.benchmark = True
+    torch.set_float32_matmul_precision("medium")
+
+    start = perf_counter()
+    a = torch.randn(1000, 1000, device="cuda")
+    b = torch.randn(1000, 1000, device="cuda")
+    torch.matmul(a, b)
+    elapsed = perf_counter() - start
+
+    print(f"Warming up torch: {elapsed:g}[s]")
+
+    elapsed_dict = {}
+
+    X, _ = make_regression(n_samples=size[0], n_features=size[1])
+
+    pcas = {
+        "sklearn": PCA(n_components=2),
+        "torch-cuda": PCATorch(n_components=2, qr=False, svd_flip=False, device="cuda"),
+        "torch-cuda-svd_flip": PCATorch(
+            n_components=2, qr=False, svd_flip=True, device="cuda"
+        ),
+        "torch-cuda-qr": PCATorch(
+            n_components=2, qr=True, svd_flip=False, device="cuda"
+        ),
+        "torch-cuda-qr-svd_flip": PCATorch(
+            n_components=2, qr=True, svd_flip=True, device="cuda"
+        ),
+        "torch-cpu": PCATorch(n_components=2, qr=False, svd_flip=False, device="cpu"),
+        "torch-cpu-svd_flip": PCATorch(
+            n_components=2, qr=False, svd_flip=True, device="cpu"
+        ),
+        "torch-cpu-qr": PCATorch(n_components=2, qr=True, svd_flip=False, device="cpu"),
+        "torch-cpu-qr-svd_flip": PCATorch(
+            n_components=2, qr=True, svd_flip=True, device="cpu"
+        ),
+    }
+
+    for name, pca in pcas.items():
+        for i in range(2):
+            start = perf_counter()
+            pca.fit(X)
+            pca.transform(X)
+            elapsed = perf_counter() - start
+            print(f"{name}: {elapsed:g}[s]")
+        elapsed_dict[name] = elapsed
+
+    print(elapsed_dict)
+
+
+if __name__ == "__main__":
+    pca_performance_test()
