@@ -10,7 +10,45 @@ from ...types import TX, TY, TEstimator
 from .reshaper import SkorchCNNReshaper, SkorchReshaper
 
 
+class AllowNan(nn.Module):
+    """Replaces NaNs in the target values with the predictions."""
+
+    def __init__(
+        self, loss: nn.Module, *, has_nan: Literal["left", "right", "both"] = "both"
+    ) -> None:
+        """Replaces NaNs in the target values with the predictions.
+
+        Parameters
+        ----------
+        loss : nn.Module
+            The loss function to use.
+        has_nan : Literal['left', 'right', 'both'], optional
+            If 'left', allows NaNs in the first argument of the loss function.
+            If 'right', allows NaNs in the second argument of the loss function.
+            If 'both', allows NaNs in both arguments of the loss function.
+        """
+        super().__init__()
+        self.loss = loss
+        self.has_nan = has_nan
+
+    def forward(self, y_pred: torch.Tensor, y_true: torch.Tensor) -> torch.Tensor:
+        if self.has_nan == "both":
+            is_nan = torch.isnan(y_pred) | torch.isnan(y_true)
+        elif self.has_nan == "left":
+            is_nan = torch.isnan(y_pred)
+        elif self.has_nan == "right":
+            is_nan = torch.isnan(y_true)
+        else:
+            raise ValueError(f"Unknown has_nan: {self.has_nan}")
+
+        y_pred = torch.where(is_nan, torch.zeros_like(y_pred), y_pred)
+        y_true = torch.where(is_nan, torch.zeros_like(y_true), y_true)
+        return self.loss(y_pred, y_true)
+
+
 class LNErrors(nn.Module):
+    """Returns L^n errors (not mean of L^n errors)."""
+
     def __init__(self, n: int = 2) -> None:
         """Returns L^n errors (not mean of L^n errors).
 
