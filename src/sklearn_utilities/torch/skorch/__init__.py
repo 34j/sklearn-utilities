@@ -1,4 +1,5 @@
 from .proba import (
+    AllowNan,
     AsymmetricLoss,
     AsymmetricLosses,
     LNErrors,
@@ -13,6 +14,7 @@ __all__ = [
     "SkorchReshaperProba",
     "SkorchCNNReshaperProba",
     "LNErrors",
+    "AllowNan",
     "AsymmetricLoss",
     "AsymmetricLosses",
     "SkorchReshaperProba",
