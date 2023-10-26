@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.2.1 (2023-10-26)
+
+### Fix
+
+- Make svd_flip optional (#6) ([`6f8ea02`](https://github.com/34j/sklearn-utilities/commit/6f8ea02d0b863be4718d46ec0d7477d682b4778f))
+
 ## v0.2.0 (2023-10-26)
 
 ### Feature
