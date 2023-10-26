@@ -40,7 +40,12 @@ class SkorchReshaper(EstimatorWrapperBase[TEstimator], Generic[TEstimator]):
     def fit(self, X: TX, y: TY, **fit_params: Any) -> Self:
         # allow multioutput
         X_, y_ = self._validate_data(
-            X, y, force_all_finite=True, multi_output=True, allow_nd=True
+            X,
+            y,
+            validate_separately=(
+                {"force_all_finite": False, "allow_nd": True, "ensure_2d": False},
+                {"force_all_finite": False, "allow_nd": True, "ensure_2d": False},
+            ),
         )
         X_ = X_.astype(np.float32)
         y_ = y_.astype(np.float32)
@@ -51,7 +56,9 @@ class SkorchReshaper(EstimatorWrapperBase[TEstimator], Generic[TEstimator]):
         return self
 
     def predict(self, X: TX, **predict_params: Any) -> TY:
-        X_: np.ndarray = self._validate_data(X, force_all_finite=True)
+        X_: np.ndarray = self._validate_data(
+            X, force_all_finite=False, allow_nd=True, ensure_2d=False
+        )
         X_ = X_.astype(np.float32)
         y = self.estimator.predict(X_, **predict_params)
         if self.y_ndim_ == 1 and y.shape[1] == 1:
@@ -89,7 +96,14 @@ class SkorchCNNReshaper(EstimatorWrapperBase[TEstimator], Generic[TEstimator]):
             )
 
     def fit(self, X: TX, y: TY, **fit_params: Any) -> Self:
-        X_, y_ = self._validate_data(X, y, force_all_finite=True, multi_output=True)
+        X_, y_ = self._validate_data(
+            X,
+            y,
+            validate_separately=(
+                {"force_all_finite": False, "allow_nd": True, "ensure_2d": False},
+                {"force_all_finite": False, "allow_nd": True, "ensure_2d": False},
+            ),
+        )
         X_ = X_.astype(np.float32)
         y_ = y_.astype(np.float32)
         if self.window_size is not None:
@@ -109,7 +123,9 @@ class SkorchCNNReshaper(EstimatorWrapperBase[TEstimator], Generic[TEstimator]):
         return self
 
     def predict(self, X: TX, **predict_params: Any) -> TY:
-        X_ = self._validate_data(X, force_all_finite=True)
+        X_ = self._validate_data(
+            X, force_all_finite=False, allow_nd=True, ensure_2d=False
+        )
         X_ = X_.astype(np.float32)
         if self.window_size is not None:
             X_ = sliding_window_view(X_, self.window_size, axis=0)

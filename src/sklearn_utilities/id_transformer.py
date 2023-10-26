@@ -14,11 +14,11 @@ class IdTransformer(BaseEstimator, TransformerMixin):
     def fit(self, X: Any, y: Any = None, **fit_params: Any) -> Self:
         return self
 
-    def transform(self, X: T) -> T:
+    def transform(self, X: T, **transform_params: Any) -> T:
         return X
 
-    def inverse_transform(self, X: T) -> T:
+    def inverse_transform(self, X: T, **transform_params: Any) -> T:
         return X
 
-    def inverse_transform_var(self, X: T) -> T:
+    def inverse_transform_var(self, X: T, **transform_params: Any) -> T:
         return X

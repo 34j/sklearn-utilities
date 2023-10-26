@@ -46,7 +46,7 @@ class DummyRegressorVar(DummyRegressor):
     def predict(
         self, X: ArrayLike, return_std: bool = False
     ) -> ndarray | tuple[ndarray, ndarray]:
-        return super().predict(X, False), self._var_regressor.predict_var(X)
+        return super().predict(X, False), self.predict_var(X)
 
     def predict_var(self, X: ArrayLike) -> ArrayLike:
         return self._var_regressor.predict(X)
