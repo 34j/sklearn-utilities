@@ -1,9 +1,18 @@
+from typing import Any
+
+import pytest
 import torch
 import torch.nn as nn
 from sklearn.metrics import mean_squared_error
 from skorch import NeuralNet
 
+from sklearn_utilities.dataset import add_missing_values
+from sklearn_utilities.proba.standard_scaler_var import StandardScalerVar
+from sklearn_utilities.proba.transformed_target_estimator import (
+    TransformedTargetEstimatorVar,
+)
 from sklearn_utilities.torch.skorch.proba import (
+    AllowNan,
     AsymmetricLoss,
     AsymmetricLosses,
     LNErrors,
@@ -96,3 +105,26 @@ def test_cnn_reshaper():
     est.fit(X_train, y_train)
     y_pred, y_std = est.predict(X_test, return_std=True)
     mean_squared_error(y_test[5 - 1 :], y_pred)
+
+
+@pytest.mark.parametrize("has_nan", ["right", "both"])
+def test_nan(has_nan: Any) -> None:
+    global X_train, y_train, X_test, y_test
+    X_train, y_train = add_missing_values(
+        (X_train, y_train), missing_rate_x=0.0, missing_rate_y=0.5
+    )
+    net = nn.Sequential(nn.LazyLinear(10), nn.GELU(), nn.LazyLinear(n_ts * 2))
+    est = SkorchReshaperProba(
+        NeuralNet(
+            module=net,
+            criterion=AsymmetricLosses(
+                ts=ts, loss=AllowNan(LNErrors(), has_nan=has_nan)
+            ),
+        )
+    )
+    est = TransformedTargetEstimatorVar(
+        est, transformer=StandardScalerVar(), inverse_transform_separately=True
+    )
+    est.fit(X_train, Y_train)
+    y_pred, y_std = est.predict(X_test, return_std=True)
+    mean_squared_error(Y_test, y_pred)
