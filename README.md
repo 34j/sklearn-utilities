@@ -42,6 +42,8 @@ pip install sklearn-utilities
 
 ## API
 
+See [Docs](https://sklearn-utilities.readthedocs.io/en/latest/sklearn_utilities.html) for more information.
+
 - `EstimatorWrapperBase`: base class for wrappers. Redirects all attributes which are not in the wrapper to the wrapped estimator.
 - `DataFrameWrapper`: tries to convert every estimator output to a pandas DataFrame or Series.
 - `FeatureUnionPandas`: a `FeatureUnion` that works with pandas DataFrames.
@@ -56,9 +58,10 @@ pip install sklearn-utilities
 - `RecursiveFitSubtractRegressor`: a regressor that recursively fits a regressor and subtracts the prediction from the target.
 - `SmartMultioutputEstimator`: a `MultiOutputEstimator` that supports tuple of arrays in `predict()` and supports pandas `Series` and `DataFrame`.
 - `until_event()`, `since_event()`: calculates the time since or until events (`Series[bool]`)
-- `ComposeVarEstimator`: compose mean and std/var estimators.
+- `ComposeVarEstimator`: composes mean and std/var estimators.
 - `DummyRegressorVar`: `DummyRegressor` that returns 1.0 for std/var.
 - `TransformedTargetRegressorVar`: `TransformedTargetRegressor` with std/var support.
+- `StandardScalerVar`: `StandardScaler` with std/var support.
 
 ### `sklearn_utilities.dataset`
 
@@ -70,7 +73,8 @@ pip install sklearn-utilities
 
 #### `sklearn_utilities.torch.skorch`
 
-- `SkorchReshaper`, `SkorchCNNReshaper`: reshape X and y for `nn.Linear` and `nn.Conv1d/2d` respectively. (For `nn.Conv2d`, uses `np.sliding_window_view()`.)
+- `SkorchReshaper`, `SkorchCNNReshaper`: reshapes X and y for `nn.Linear` and `nn.Conv1d/2d` respectively. (For `nn.Conv2d`, uses `np.sliding_window_view()`.)
+- `AllowNaN`: wraps a loss module and assign 0 to y and y_hat for indices where y contains NaN in `forward()`..
 
 ## See also
 

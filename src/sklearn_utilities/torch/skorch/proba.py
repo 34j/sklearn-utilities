@@ -1,10 +1,12 @@
 from __future__ import annotations
 
+import math
 from typing import Any, Generic, Literal, Sequence
 
 import numpy as np
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 
 from ...types import TX, TY, TEstimator
 from .reshaper import SkorchCNNReshaper, SkorchReshaper
@@ -62,6 +64,78 @@ class LNErrors(nn.Module):
 
     def forward(self, y_pred: torch.Tensor, y_true: torch.Tensor) -> torch.Tensor:
         return torch.abs(y_true - y_pred).pow(self.n)
+
+
+class LogCoshErrors(nn.Module):
+    """Log cosh errors.
+    Loss = log(cosh(errors + eps))
+
+    See also
+    --------
+    https://datascience.stackexchange.com/questions/96271/logcoshloss-on-pytorch
+    """
+
+    def __init__(self, *, softplus: bool = True, eps: float | None = None) -> None:
+        """Returns log(cosh(errors)).
+
+        Parameters
+        ----------
+        softplus : bool, optional
+            If True, uses softplus to get stable results, by default True"""
+        super().__init__()
+        self.softplus = softplus
+        self.eps = eps
+
+    def forward(self, y_pred: torch.Tensor, y_true: torch.Tensor) -> torch.Tensor:
+        x = y_pred - y_true
+        if self.softplus:
+            return x + F.softplus(-2.0 * x) - math.log(2.0)
+        else:
+            eps = self.eps or torch.finfo(x.dtype).eps
+            return torch.log(torch.cosh(x + eps))
+
+
+class XTanhErrors(nn.Module):
+    """XTanh errors.
+    Loss = x * tanh(x)
+
+    See also
+    --------
+    https://github.com/tuantle/regression-losses-pytorch
+    """
+
+    def forward(self, y_pred: torch.Tensor, y_true: torch.Tensor) -> torch.Tensor:
+        x = y_pred - y_true
+        return x * torch.tanh(x)
+
+
+class XSigmoidErrors(nn.Module):
+    """XSigmoid errors.
+    Loss = x * (2 * sigmoid(x) - 1)
+
+    See also
+    --------
+    https://github.com/tuantle/regression-losses-pytorch
+    """
+
+    def forward(self, y_pred: torch.Tensor, y_true: torch.Tensor) -> torch.Tensor:
+        x = y_pred - y_true
+        return x * (2 * torch.sigmoid(x) - 1)
+
+
+class AlgebraicErrors(nn.Module):
+    """Algebraic errors.
+    Loss = x^2 / sqrt(1 + x^2)
+
+    See also
+    --------
+    https://github.com/tuantle/regression-losses-pytorch
+    """
+
+    def forward(self, y_pred: torch.Tensor, y_true: torch.Tensor) -> torch.Tensor:
+        x = y_pred - y_true
+        x2 = torch.pow(x, 2)
+        return x2 / torch.sqrt(1 + x2)
 
 
 class AsymmetricLoss(nn.Module):

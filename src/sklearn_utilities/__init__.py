@@ -19,6 +19,7 @@ from .proba import (
     ComposeVarEstimator,
     DummyRegressorVar,
     PipelineVar,
+    StandardScalerVar,
     TransformedTargetEstimatorVar,
 )
 from .recursive_fit_subtract_regressor import RecursiveFitSubtractRegressor
@@ -45,4 +46,5 @@ __all__ = [
     "DummyRegressorVar",
     "TransformedTargetEstimatorVar",
     "PipelineVar",
+    "StandardScalerVar",
 ]
