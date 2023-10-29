@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.3.0 (2023-10-29)
+
+### Feature
+
+- Add more errors and fix imports (#16) ([`7781834`](https://github.com/34j/sklearn-utilities/commit/7781834fccbe4781ad7ab80e78d41c4899697b98))
+
 ## v0.2.3 (2023-10-27)
 
 ### Fix
