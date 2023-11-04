@@ -76,7 +76,7 @@ class SmartMultioutputEstimator(BaseEstimator, RegressorMixin, Generic[TEstimato
         pass_numpy : bool, optional
             Whether to pass numpy arrays to the estimator, by default False
         """
-        self.estimator = clone(estimator, safe=False)
+        self.estimator = estimator
         self.n_jobs = n_jobs
         self.verbose = verbose
         self.pass_numpy = pass_numpy
