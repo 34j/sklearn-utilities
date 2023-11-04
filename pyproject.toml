@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "sklearn-utilities"
-version = "0.3.0"
+version = "0.3.1"
 description = "Utilities for scikit-learn."
 authors = ["34j <34j.95a2p@simplelogin.com>"]
 license = "MIT"
