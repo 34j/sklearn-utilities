@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.4.0 (2023-11-05)
+
+### Feature
+
+- Add `evalsetwrapper` and `catboostprogressbarwrapper` (#20) ([`c00e132`](https://github.com/34j/sklearn-utilities/commit/c00e132b32a3a481a6f88cd9a824903c130d3afa))
+
 ## v0.3.1 (2023-11-04)
 
 ### Fix
