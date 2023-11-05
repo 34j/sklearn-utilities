@@ -203,13 +203,19 @@ if importlib.util.find_spec("catboost") is not None:
 
                 def write(self_child, text: str) -> None:
                     if self_child.pbar is None:
+                        params = self.estimator._get_params()
+                        iterations = (
+                            params.get("iterations", None)
+                            or params.get("n_estimators", None)
+                            or params.get("num_boost_round", None)
+                            or params.get("num_trees", None)
+                            or params.get("num_iterations", None)
+                        )  # noqa
                         self_child.pbar = self.tqdm_cls_(
                             **(
                                 self.tqdm_kwargs_
                                 | {
-                                    "total": self.estimator._get_params().get(
-                                        "iterations", None
-                                    ),
+                                    "total": iterations,
                                 }
                             ),
                         )
