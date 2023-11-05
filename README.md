@@ -62,6 +62,7 @@ See [Docs](https://sklearn-utilities.readthedocs.io/en/latest/sklearn_utilities.
 - `DummyRegressorVar`: `DummyRegressor` that returns 1.0 for std/var.
 - `TransformedTargetRegressorVar`: `TransformedTargetRegressor` with std/var support.
 - `StandardScalerVar`: `StandardScaler` with std/var support.
+- `EvalSetWrapper`, `CatBoostEvalSetWrapper`: wrapper that passes `eval_set` to `fit()` using `train_test_split()`. The latter shows progress bar (using tqdm) as well. Useful for early stopping. For LightGBM, see [lightgbm-callbacks](https://github.com/34j/lightgbm-callbacks).
 
 ### `sklearn_utilities.dataset`
 
