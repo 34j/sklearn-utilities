@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.4.1 (2023-11-05)
+
+### Fix
+
+- Not only `iterations` (#21) ([`563648e`](https://github.com/34j/sklearn-utilities/commit/563648e985a1897f7aa7480319f9f2977c8183fb))
+
 ## v0.4.0 (2023-11-05)
 
 ### Feature
