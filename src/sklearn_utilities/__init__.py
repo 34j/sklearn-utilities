@@ -5,6 +5,7 @@ from .drop_by_noise_prediction import DropByNoisePrediction
 from .drop_missing_columns import DropMissingColumns
 from .drop_missing_rows_y import DropMissingRowsY
 from .estimator_wrapper import EstimatorWrapperBase
+from .eval_set import EvalSetWrapper
 from .event import since_event, until_event
 from .id_transformer import IdTransformer
 from .intersect import IntersectXY
@@ -47,4 +48,5 @@ __all__ = [
     "TransformedTargetEstimatorVar",
     "PipelineVar",
     "StandardScalerVar",
+    "EvalSetWrapper",
 ]
