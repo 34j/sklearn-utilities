@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import warnings
 from typing import Any, Callable, Literal
 
@@ -15,7 +17,7 @@ class ReindexMissingColumns(BaseEstimator, TransformerMixin):
         self,
         *,
         if_missing: Literal["warn", "raise"]
-        | Callable[["Index[Any]", "Index[Any]"], None] = "warn",
+        | Callable[[Index[Any], Index[Any]], None] = "warn",
         reindex_kwargs: dict[
             Literal["method", "copy", "level", "fill_value", "limit", "tolerance"], Any
         ] = {},
