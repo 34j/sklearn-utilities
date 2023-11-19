@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.5.0 (2023-11-19)
+
+### Feature
+
+- Add `reindexmissingcolumns` and `reportnonfinite` (#27) ([`7d0e1f5`](https://github.com/34j/sklearn-utilities/commit/7d0e1f5a49136aace1cc4b2e5dc79264a6ab2229))
+
 ## v0.4.2 (2023-11-10)
 
 ### Fix
