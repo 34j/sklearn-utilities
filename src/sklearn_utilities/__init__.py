@@ -24,6 +24,8 @@ from .proba import (
     TransformedTargetEstimatorVar,
 )
 from .recursive_fit_subtract_regressor import RecursiveFitSubtractRegressor
+from .reindex_missing_columns import ReindexMissingColumns
+from .report_non_finite import ReportNonFinite
 
 __all__ = [
     "DataFrameWrapper",
@@ -49,4 +51,6 @@ __all__ = [
     "PipelineVar",
     "StandardScalerVar",
     "EvalSetWrapper",
+    "ReportNonFinite",
+    "ReindexMissingColumns",
 ]
