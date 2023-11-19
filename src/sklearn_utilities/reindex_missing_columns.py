@@ -13,6 +13,7 @@ class ReindexMissingColumns(BaseEstimator, TransformerMixin):
 
     def __init__(
         self,
+        *,
         if_missing: Literal["warn", "raise"]
         | Callable[["Index[Any]", "Index[Any]"], None] = "warn",
         reindex_kwargs: dict[

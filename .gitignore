@@ -140,3 +140,4 @@ dmypy.json
 cython_debug/
 .VSCodeCounter/
 catboost_info/
+sklearn_utilities_info/
