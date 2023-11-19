@@ -54,6 +54,8 @@ See [Docs](https://sklearn-utilities.readthedocs.io/en/latest/sklearn_utilities.
 - `DropMissingColumns`: drops columns with missing values above a threshold.
 - `DropMissingRowsY`: drops rows with missing values in y. Use `feature_engine.DropMissingData` for X.
 - `IntersectXY`: drops rows where the index of X and y do not intersect. Use with `feature_engine.DropMissingData`.
+- `ReindexMissingColumns`: reindexes columns of X in `transform()` to match the columns of X in `fit()`.
+- `ReportNonFinite`: reports non-finite values in X and/or y.
 - `IdTransformer`: a transformer that does nothing.
 - `RecursiveFitSubtractRegressor`: a regressor that recursively fits a regressor and subtracts the prediction from the target.
 - `SmartMultioutputEstimator`: a `MultiOutputEstimator` that supports tuple of arrays in `predict()` and supports pandas `Series` and `DataFrame`.
