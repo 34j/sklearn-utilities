@@ -52,6 +52,10 @@ torch = "==2.0.0||>2.1.0"
 [tool.poetry.group.catboost.dependencies]
 catboost = "^1.2.2"
 
+
+[tool.poetry.group.seaborn.dependencies]
+seaborn = "^0.13.0"
+
 [tool.semantic_release]
 branch = "main"
 version_toml = ["pyproject.toml:tool.poetry.version"]
