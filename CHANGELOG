@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.5.1 (2023-12-08)
+
+### Fix
+
+- Update dependency pandas to v2.1.4 (#33) ([`b3da79e`](https://github.com/34j/sklearn-utilities/commit/b3da79ebaf51c3075baf50fccb6a23cbcb71d372))
+
 ## v0.5.0 (2023-11-19)
 
 ### Feature
