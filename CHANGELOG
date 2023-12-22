@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.5.3 (2023-12-22)
+
+### Fix
+
+- Update dependency lightgbm to v4.2.0 (#44) ([`a07b964`](https://github.com/34j/sklearn-utilities/commit/a07b9642125f620e144c7014ed0e576a4e28c120))
+
 ## v0.5.2 (2023-12-10)
 
 ### Fix
