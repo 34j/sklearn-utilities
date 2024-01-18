@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.5.4 (2024-01-18)
+
+### Fix
+
+- Update dependency scikit-learn to v1.4.0 (#53) ([`3300e61`](https://github.com/34j/sklearn-utilities/commit/3300e61a71133ce6dae18c9bd1f8b34000ab8759))
+
 ## v0.5.3 (2023-12-22)
 
 ### Fix
