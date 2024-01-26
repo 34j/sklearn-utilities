@@ -131,23 +131,25 @@ if importlib.util.find_spec("catboost") is not None:
             self,
             estimator: TEstimator,
             *,
-            tqdm_cls: Literal[
-                "auto",
-                "autonotebook",
-                "std",
-                "notebook",
-                "asyncio",
-                "keras",
-                "dask",
-                "tk",
-                "gui",
-                "rich",
-                "contrib.slack",
-                "contrib.discord",
-                "contrib.telegram",
-                "contrib.bells",
-            ]
-            | type[tqdm.std.tqdm] = "auto",
+            tqdm_cls: (
+                Literal[
+                    "auto",
+                    "autonotebook",
+                    "std",
+                    "notebook",
+                    "asyncio",
+                    "keras",
+                    "dask",
+                    "tk",
+                    "gui",
+                    "rich",
+                    "contrib.slack",
+                    "contrib.discord",
+                    "contrib.telegram",
+                    "contrib.bells",
+                ]
+                | type[tqdm.std.tqdm]
+            ) = "auto",
             tqdm_kwargs: dict[str, Any] | None = None,
             verbose: bool = True,
         ) -> None:
