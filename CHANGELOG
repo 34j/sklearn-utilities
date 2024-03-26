@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.5.8 (2024-03-26)
+
+### Fix
+
+- Update dependency typing-extensions to v4.10.0 (#74) ([`00053f1`](https://github.com/34j/sklearn-utilities/commit/00053f104efa1381cf60977af6f88a76647bc57d))
+
 ## v0.5.7 (2024-03-25)
 
 ### Fix
