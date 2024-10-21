@@ -37,14 +37,12 @@ class ComposeVarEstimator(
     @overload
     def predict(
         self, X: TX, return_std: Literal[False] = ..., **predict_params: Any
-    ) -> TY:
-        ...
+    ) -> TY: ...
 
     @overload
     def predict(
         self, X: TX, return_std: Literal[True], **predict_params: Any
-    ) -> tuple[TY, TY]:
-        ...
+    ) -> tuple[TY, TY]: ...
 
     def predict(
         self, X: TX, return_std: bool = False, **predict_params: Any
