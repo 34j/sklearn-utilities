@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.5.10 (2024-10-30)
+
+### Fix
+
+- Update dependency tqdm-joblib to ^0.0.4 (#81) ([`6ae37c8`](https://github.com/34j/sklearn-utilities/commit/6ae37c805751e562b1572370c8d5d39142e8c19b))
+
 ## v0.5.9 (2024-10-30)
 
 ### Fix
