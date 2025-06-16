@@ -28,8 +28,9 @@ class ReportNonFinite(BaseEstimator, TransformerMixin):
         plot: bool = True,
         calc_corr: bool = False,
         callback: Callable[[dict[str, DataFrame | Series]], None] | None = None,
-        callback_figure: Callable[[Figure], None]
-        | None = lambda fig: Path("sklearn_utilities_info/ReportNonFinite").mkdir(  # type: ignore
+        callback_figure: Callable[[Figure], None] | None = lambda fig: Path(
+            "sklearn_utilities_info/ReportNonFinite"
+        ).mkdir(  # type: ignore
             parents=True, exist_ok=True
         )
         or fig.savefig(
