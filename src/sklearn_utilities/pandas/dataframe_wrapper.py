@@ -25,20 +25,24 @@ def to_frame_or_series(
             return Series(
                 array,
                 index=base_index if array.shape[0] == len(base_index) else None,
-                name=base_columns_or_name
-                if not isinstance(base_columns_or_name, Index)
-                else None,
+                name=(
+                    base_columns_or_name
+                    if not isinstance(base_columns_or_name, Index)
+                    else None
+                ),
             )
         if array.ndim == 2:
             return DataFrame(
                 array,
                 index=base_index if array.shape[0] == len(base_index) else None,
-                columns=base_columns_or_name
-                if (
-                    isinstance(base_columns_or_name, Index)
-                    and array.shape[1] == len(base_columns_or_name)
-                )
-                else None,
+                columns=(
+                    base_columns_or_name
+                    if (
+                        isinstance(base_columns_or_name, Index)
+                        and array.shape[1] == len(base_columns_or_name)
+                    )
+                    else None
+                ),
             )
     except Exception as e:
         warnings.warn(f"Could not convert {array} to DataFrame or Series: {e}")
