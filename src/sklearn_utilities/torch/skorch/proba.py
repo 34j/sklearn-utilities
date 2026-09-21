@@ -297,22 +297,24 @@ class SkorchReshaperProbaMixin(Generic[TEstimator]):
         X: TX,
         *,
         return_std: bool = False,
-        type_: Literal[
-            "mean",
-            "median",
-            "nanmean",
-            "nanmedian",
-            "var",
-            "std",
-            "ptp",
-            "nanvar",
-            "nanstd",
-        ]
-        | tuple[
-            Literal["mean", "median", "nanmean", "nanmedian"],
-            Literal["var", "std", "ptp", "nanvar", "nanstd"],
-        ]
-        | None = None,
+        type_: (
+            Literal[
+                "mean",
+                "median",
+                "nanmean",
+                "nanmedian",
+                "var",
+                "std",
+                "ptp",
+                "nanvar",
+                "nanstd",
+            ]
+            | tuple[
+                Literal["mean", "median", "nanmean", "nanmedian"],
+                Literal["var", "std", "ptp", "nanvar", "nanstd"],
+            ]
+            | None
+        ) = None,
         **predict_params: Any,
     ) -> TY | tuple[TY, TY]:
         ts_axis_ = self.estimator.criterion.ts_axis_

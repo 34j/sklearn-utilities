@@ -115,9 +115,12 @@ class SmartMultioutputEstimator(BaseEstimator, RegressorMixin, Generic[TEstimato
         check_is_fitted(self)
         X = X[self.feature_names_in_]
         preds = [est.predict(X, **predict_params) for est in self.estimators_]
-        preds_: DataFrame | Series | NDArray[Any] | tuple[
-            DataFrame | Series | NDArray[Any], ...
-        ]
+        preds_: (
+            DataFrame
+            | Series
+            | NDArray[Any]
+            | tuple[DataFrame | Series | NDArray[Any], ...]
+        )
         if any(isinstance(pred, tuple) for pred in preds):
             # list of tuples of arrays to tuples of arrays
             preds_ = tuple(np.array(pred).T for pred in zip(*preds))
