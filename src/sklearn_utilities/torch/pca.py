@@ -121,9 +121,9 @@ class PCATorch(nn.Module, BaseEstimator, TransformerMixin):
         *,
         qr: bool = False,
         svd_flip: bool | None = None,
-        device: torch.device | int | str = "cuda"
-        if torch.cuda.is_available()
-        else "cpu",
+        device: torch.device | int | str = (
+            "cuda" if torch.cuda.is_available() else "cpu"
+        ),
         dtype: torch.dtype = torch.float32,
         **kwargs: Any,
     ) -> None:
