@@ -9,7 +9,8 @@ from .types import TEstimator
 
 class EstimatorWrapperBase(BaseEstimator, MetaEstimatorMixin, Generic[TEstimator]):
     """A base class for estimator wrappers
-    that delegates all attributes to the wrapped estimator."""
+    that delegates all attributes to the wrapped estimator.
+    """
 
     estimator: TEstimator
 
@@ -21,6 +22,7 @@ class EstimatorWrapperBase(BaseEstimator, MetaEstimatorMixin, Generic[TEstimator
         ----------
         estimator : Any
             The estimator to be wrapped.
+
         """
         self.estimator = estimator
 

@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-from typing import Any, Generic, Sequence
+from collections.abc import Sequence
+from typing import Any, Generic, Self
 
 import numpy as np
 from joblib import Parallel, delayed
 from pandas import DataFrame, Series, concat
 from sklearn.base import BaseEstimator, TransformerMixin, check_is_fitted, clone
-from typing_extensions import Self
 
 from .types import TX, TEstimator
 
@@ -14,7 +14,8 @@ from .types import TX, TEstimator
 def generate_new_prefix(X: DataFrame, prefix: str = "y_pred_") -> str:
     """Generate a new column name for the prediction."""
     last_number = (
-        X.columns.to_series()
+        X.columns
+        .to_series()
         .str.extract(rf"^{prefix}(\d+)_.+$", expand=False)
         .fillna(-1)
         .astype(int)
@@ -25,7 +26,8 @@ def generate_new_prefix(X: DataFrame, prefix: str = "y_pred_") -> str:
 
 class AppendPredictionToXSingle(BaseEstimator, TransformerMixin, Generic[TEstimator]):
     """Append the prediction of the estimator to X.
-    To use multiple estimators, use AppendPredictionToX instead."""
+    To use multiple estimators, use AppendPredictionToX instead.
+    """
 
     estimator: TEstimator
     estimator_: TEstimator
@@ -48,6 +50,7 @@ class AppendPredictionToXSingle(BaseEstimator, TransformerMixin, Generic[TEstima
         concat : bool, optional
             Whether to concatenate the prediction to X,
             by default True
+
         """
         self.estimator = estimator
         self.concat = concat
@@ -62,7 +65,8 @@ class AppendPredictionToXSingle(BaseEstimator, TransformerMixin, Generic[TEstima
         If pandas DataFrame is given, the prediction is added as a new column
         with the name "y_pred_{estimator.__class__.__name__}_{i}" if the prediction
         is 1D, or "y_pred_{estimator.__class__.__name__}_{i}_{column_name}" if the
-        prediction is 2D."""
+        prediction is 2D.
+        """
         check_is_fitted(self, "estimator_")
         y_pred = self.estimator_.predict(X, **predict_params)
 
@@ -78,23 +82,20 @@ class AppendPredictionToXSingle(BaseEstimator, TransformerMixin, Generic[TEstima
             else:
                 y_pred = DataFrame(y_pred, index=X.index)
                 y_pred = y_pred.add_prefix(prefix + "_")
-            y_pred.columns = y_pred.columns.str.replace(
-                r"[^a-zA-Z0-9_]", "_", regex=True
-            )
+            y_pred.columns = y_pred.columns.str.replace(r"[^a-zA-Z0-9_]", "_", regex=True)
 
             # concatenate
             if self.concat:
                 return concat([X, y_pred], axis=1)
             return y_pred
-        else:
-            # numpy
-            if y_pred.ndim == 1:
-                y_pred = y_pred.reshape(-1, 1)
+        # numpy
+        if y_pred.ndim == 1:
+            y_pred = y_pred.reshape(-1, 1)
 
-            # concatenate
-            if self.concat:
-                return np.hstack([X, y_pred])
-            return y_pred
+        # concatenate
+        if self.concat:
+            return np.hstack([X, y_pred])
+        return y_pred
 
 
 class AppendPredictionToX(BaseEstimator, TransformerMixin, Generic[TEstimator]):
@@ -128,6 +129,7 @@ class AppendPredictionToX(BaseEstimator, TransformerMixin, Generic[TEstimator]):
             by default True
         n_jobs : int | None, optional
             The number of jobs to run in parallel, by default -1
+
         """
         if not isinstance(estimators, Sequence):
             estimators = [estimators]
@@ -156,7 +158,8 @@ class AppendPredictionToX(BaseEstimator, TransformerMixin, Generic[TEstimator]):
         "y_pred_{estimator.__class__.__name__}_{i}_{estimator_index}"
         if the prediction is 1D, or
         "y_pred_{estimator.__class__.__name__}_{i}_{column_name}_{estimator_index}"
-        if the prediction is 2D."""
+        if the prediction is 2D.
+        """
         check_is_fitted(self, "estimators_")
         transformed: list[TX] = [
             estimator_.transform(X, y, **predict_params).add_suffix(f"_{i}")
@@ -166,7 +169,6 @@ class AppendPredictionToX(BaseEstimator, TransformerMixin, Generic[TEstimator]):
             if self.concat:
                 return concat([X, *transformed], axis=1)
             return concat(transformed, axis=1)
-        else:
-            if self.concat:
-                return np.hstack([X, *transformed])
-            return np.hstack(transformed)
+        if self.concat:
+            return np.hstack([X, *transformed])
+        return np.hstack(transformed)

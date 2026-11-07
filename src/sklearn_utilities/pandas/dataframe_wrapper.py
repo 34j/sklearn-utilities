@@ -3,7 +3,8 @@ from __future__ import annotations
 import inspect
 import re
 import warnings
-from typing import Any, Generic, Hashable, TypeVar
+from collections.abc import Hashable
+from typing import Any, Generic, TypeVar
 
 from numpy.typing import NDArray
 from pandas import DataFrame, Index, Series
@@ -25,9 +26,7 @@ def to_frame_or_series(
             return Series(
                 array,
                 index=base_index if array.shape[0] == len(base_index) else None,
-                name=base_columns_or_name
-                if not isinstance(base_columns_or_name, Index)
-                else None,
+                name=base_columns_or_name if not isinstance(base_columns_or_name, Index) else None,
             )
         if array.ndim == 2:
             return DataFrame(
@@ -52,9 +51,7 @@ def to_frame_or_series_tuple(
     base_columns_or_name: Index[Any] | Hashable,
 ) -> tuple[DataFrame | Series | TArray, ...] | DataFrame | Series | TArray:
     if isinstance(array, tuple):
-        return tuple(
-            to_frame_or_series(a, base_index, base_columns_or_name) for a in array
-        )
+        return tuple(to_frame_or_series(a, base_index, base_columns_or_name) for a in array)
     return to_frame_or_series(array, base_index, base_columns_or_name)
 
 
@@ -83,6 +80,7 @@ class DataFrameWrapper(EstimatorWrapperBase[TEstimator], Generic[TEstimator]):
         pattern_y : str, optional
             The regex pattern to match the method names,
             by default "^predict.*$"
+
         """
         super().__init__(estimator)
         self.pattern_x = pattern_x

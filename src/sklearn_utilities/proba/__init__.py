@@ -8,6 +8,6 @@ __all__ = [
     "ComposeVarEstimator",
     "DummyRegressorVar",
     "PipelineVar",
-    "TransformedTargetEstimatorVar",
     "StandardScalerVar",
+    "TransformedTargetEstimatorVar",
 ]

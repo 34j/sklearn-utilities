@@ -2,9 +2,9 @@ from typing import Any
 
 import pytest
 import torch
-import torch.nn as nn
 from sklearn.metrics import mean_squared_error
 from skorch import NeuralNet
+from torch import nn
 
 from sklearn_utilities.dataset import add_missing_values
 from sklearn_utilities.proba.standard_scaler_var import StandardScalerVar
@@ -96,9 +96,7 @@ def test_reshaper_multioutput():
 
 
 def test_cnn_reshaper():
-    net = nn.Sequential(
-        nn.LazyConv2d(2, 3), nn.GELU(), nn.Flatten(), nn.LazyLinear(n_ts)
-    )
+    net = nn.Sequential(nn.LazyConv2d(2, 3), nn.GELU(), nn.Flatten(), nn.LazyLinear(n_ts))
     est = SkorchCNNReshaperProba(
         NeuralNet(module=net, criterion=AsymmetricLosses(ts=n_ts)), window_size=5
     )
@@ -117,9 +115,7 @@ def test_nan(has_nan: Any) -> None:
     est = SkorchReshaperProba(
         NeuralNet(
             module=net,
-            criterion=AsymmetricLosses(
-                ts=ts, loss=AllowNan(LNErrors(), has_nan=has_nan)
-            ),
+            criterion=AsymmetricLosses(ts=ts, loss=AllowNan(LNErrors(), has_nan=has_nan)),
         )
     )
     est = TransformedTargetEstimatorVar(

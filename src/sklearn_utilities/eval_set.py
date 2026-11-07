@@ -2,11 +2,10 @@ from __future__ import annotations
 
 import importlib.util
 import warnings
-from typing import Any, Generic, Literal
+from typing import Any, Generic, Literal, Self
 
 from numpy.random import RandomState
 from sklearn.model_selection import train_test_split
-from typing_extensions import Self
 
 from .estimator_wrapper import EstimatorWrapperBase
 from .types import TEstimator
@@ -14,14 +13,15 @@ from .types import TEstimator
 
 class EvalSetWrapper(EstimatorWrapperBase[TEstimator], Generic[TEstimator]):
     """A wrapper that splits the data into train and validation sets and
-    passes the validation set to `eval_set` parameter of the estimator."""
+    passes the validation set to `eval_set` parameter of the estimator.
+    """
 
     def __init__(
         self,
         estimator: TEstimator,
         *,
-        test_size: float | int | None = None,
-        train_size: float | int | None = None,
+        test_size: float | None = None,
+        train_size: float | None = None,
         random_state: int | RandomState | None = None,
         shuffle: bool = True,
         stratify: bool = False,
@@ -60,6 +60,7 @@ class EvalSetWrapper(EstimatorWrapperBase[TEstimator], Generic[TEstimator]):
         **kwargs : Any
             ``validation_fraction`` : alias for ``test_size`` (``sklearn`` style)
             ``train_fraction`` : alias for ``train_size`` (``sklearn`` style)
+
         """
         super().__init__(estimator)
         self.test_size = test_size
@@ -89,6 +90,7 @@ class EvalSetWrapper(EstimatorWrapperBase[TEstimator], Generic[TEstimator]):
         -------
         Self
             The fitted estimator.
+
         """
         X_train, X_test, y_train, y_test = train_test_split(
             X,
@@ -115,9 +117,7 @@ if importlib.util.find_spec("catboost") is not None:
 
     TCatBoost = TypeVar("TCatBoost", bound=CatBoost)
 
-    class CatBoostProgressBarWrapper(
-        EstimatorWrapperBase[TEstimator], Generic[TEstimator]
-    ):
+    class CatBoostProgressBarWrapper(EstimatorWrapperBase[TEstimator], Generic[TEstimator]):
         """A wrapper that splits the data into train and validation sets and
         passes the validation set to `eval_set` parameter of the estimator and
         shows the progress bar using `tqdm`.
@@ -125,7 +125,8 @@ if importlib.util.find_spec("catboost") is not None:
         It is recommended to set `iterations` in `CatBoost.__init__` to show the
         progress bar.
         It is recommended to set `early_stopping_rounds` in `CatBoost.__init__`
-        to enable early stopping."""
+        to enable early stopping.
+        """
 
         def __init__(
             self,
@@ -179,6 +180,7 @@ if importlib.util.find_spec("catboost") is not None:
             >>> estimator = EvalSetWrapper(estimator)
             >>> estimator = CatBoostProgressBarWrapper(estimator)
             >>> estimator.fit(X, y)
+
             """
             super().__init__(
                 estimator,
@@ -189,7 +191,7 @@ if importlib.util.find_spec("catboost") is not None:
 
             if isinstance(tqdm_cls, str):
                 tqdm_module = importlib.import_module(f"tqdm.{tqdm_cls}")
-                self.tqdm_cls_ = getattr(tqdm_module, "tqdm")
+                self.tqdm_cls_ = tqdm_module.tqdm
             else:
                 self.tqdm_cls_ = tqdm_cls
             self.tqdm_kwargs_ = tqdm_kwargs or {}
@@ -210,7 +212,7 @@ if importlib.util.find_spec("catboost") is not None:
                             or params.get("num_boost_round", None)
                             or params.get("num_trees", None)
                             or params.get("num_iterations", None)
-                        )  # noqa
+                        )
                         self_child.pbar = self.tqdm_cls_(
                             **(
                                 self.tqdm_kwargs_
@@ -225,9 +227,7 @@ if importlib.util.find_spec("catboost") is not None:
                         if not re.match(r"^\d+:", text):
                             raise Exception("Text does not seem to be metrics")
                         text = re.sub(r"[^\s]*: ", "", text)
-                        numbers = [
-                            float(x) for x in re.findall(r"[-+]?\d*\.\d+|\d+", text)
-                        ]
+                        numbers = [float(x) for x in re.findall(r"[-+]?\d*\.\d+|\d+", text)]
                         n_iter = int(numbers[0]) + 1
                         if "(" in text:
                             # early stopping

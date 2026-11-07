@@ -31,6 +31,7 @@ def add_missing_values(
     -------
     tuple[TX, TY]
         The dataset with missing values added.
+
     """
     random_state = RandomState(random_state)
     X_full_, y_full_ = dataset

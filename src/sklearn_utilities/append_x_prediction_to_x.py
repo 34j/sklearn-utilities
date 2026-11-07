@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-from typing import Any, Generic, Hashable, Sequence
+from collections.abc import Hashable, Sequence
+from typing import Any, Generic, Self
 
 from pandas import DataFrame, Series, concat
 from sklearn.base import BaseEstimator, TransformerMixin, check_is_fitted
-from typing_extensions import Self
 
 from .pandas import DataFrameWrapper
 from .types import TEstimator
@@ -43,6 +43,7 @@ class AppendXPredictionToX(BaseEstimator, TransformerMixin, Generic[TEstimator])
             Whether to append the difference between
             the current value and the current prediction, by default True
             The column names are suffixed with "_pred_real_diff"
+
         """
         self.estimator = estimator
         self.variables = variables

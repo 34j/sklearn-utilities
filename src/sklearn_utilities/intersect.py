@@ -1,6 +1,4 @@
-from typing import Any, Generic
-
-from typing_extensions import Self
+from typing import Any, Generic, Self
 
 from .estimator_wrapper import EstimatorWrapperBase
 from .types import TEstimator
@@ -12,10 +10,12 @@ class IntersectXY(EstimatorWrapperBase[TEstimator], Generic[TEstimator]):
 
     def __init__(self, estimator: TEstimator) -> None:
         """Estimator wrapper that intersects X and y indices before fitting.
+
         Parameters
         ----------
         estimator : TEstimator
             The estimator to be wrapped.
+
         """
         super().__init__(estimator)
 

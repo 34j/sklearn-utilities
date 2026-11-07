@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import Any, Self
 
 import torch
-import torch.nn as nn
 from sklearn.base import BaseEstimator, TransformerMixin, check_is_fitted
-from typing_extensions import Self
+from torch import nn
 
 
 def svd_flip(
@@ -42,6 +42,7 @@ def svd_flip(
 
     v_adjusted : torch.Tensor
         Array v with adjusted rows and the same dimensions as v.
+
     """
     if u_based_decision:
         max_abs_cols = torch.argmax(torch.abs(u), dim=0)
@@ -67,6 +68,7 @@ def wrap_torch(func: Callable[..., Any]) -> Callable[..., Any]:
     -------
     Callable[..., Any]
         The wrapped function.
+
     """
 
     def wrapper(self: Any, *args: Any, **kwargs: Any) -> Any:
@@ -113,7 +115,9 @@ class PCATorch(nn.Module, BaseEstimator, TransformerMixin):
     components_ : torch.Tensor
         `Vt` where
         `X = U D Vt`
-        `Y = X Vh`"""
+        `Y = X Vh`
+
+    """
 
     def __init__(
         self,
@@ -121,9 +125,7 @@ class PCATorch(nn.Module, BaseEstimator, TransformerMixin):
         *,
         qr: bool = False,
         svd_flip: bool | None = None,
-        device: torch.device | int | str = "cuda"
-        if torch.cuda.is_available()
-        else "cpu",
+        device: torch.device | int | str = "cuda" if torch.cuda.is_available() else "cpu",
         dtype: torch.dtype = torch.float32,
         **kwargs: Any,
     ) -> None:
@@ -157,7 +159,9 @@ class PCATorch(nn.Module, BaseEstimator, TransformerMixin):
         components_ : torch.Tensor
             `Vt` where
             `X = U D Vt`
-            `Y = X Vh`"""
+            `Y = X Vh`
+
+        """
         super().__init__()
         self.n_components = n_components
         self.qr = qr
@@ -188,9 +192,7 @@ class PCATorch(nn.Module, BaseEstimator, TransformerMixin):
         else:
             U, _, Vt = torch.linalg.svd(Xc, full_matrices=False)
             if to_svd_flip:
-                U, Vt = svd_flip(
-                    U, Vt
-                )  # to be deterministic and consistent with sklearn
+                U, Vt = svd_flip(U, Vt, u_based_decision=False)
         self.register_buffer("components_", Vt[:d])
         return self
 
@@ -241,23 +243,13 @@ def pca_performance_test() -> None:
     pcas = {
         "sklearn": PCA(n_components=2),
         "torch-cuda": PCATorch(n_components=2, qr=False, svd_flip=False, device="cuda"),
-        "torch-cuda-svd_flip": PCATorch(
-            n_components=2, qr=False, svd_flip=True, device="cuda"
-        ),
-        "torch-cuda-qr": PCATorch(
-            n_components=2, qr=True, svd_flip=False, device="cuda"
-        ),
-        "torch-cuda-qr-svd_flip": PCATorch(
-            n_components=2, qr=True, svd_flip=True, device="cuda"
-        ),
+        "torch-cuda-svd_flip": PCATorch(n_components=2, qr=False, svd_flip=True, device="cuda"),
+        "torch-cuda-qr": PCATorch(n_components=2, qr=True, svd_flip=False, device="cuda"),
+        "torch-cuda-qr-svd_flip": PCATorch(n_components=2, qr=True, svd_flip=True, device="cuda"),
         "torch-cpu": PCATorch(n_components=2, qr=False, svd_flip=False, device="cpu"),
-        "torch-cpu-svd_flip": PCATorch(
-            n_components=2, qr=False, svd_flip=True, device="cpu"
-        ),
+        "torch-cpu-svd_flip": PCATorch(n_components=2, qr=False, svd_flip=True, device="cpu"),
         "torch-cpu-qr": PCATorch(n_components=2, qr=True, svd_flip=False, device="cpu"),
-        "torch-cpu-qr-svd_flip": PCATorch(
-            n_components=2, qr=True, svd_flip=True, device="cpu"
-        ),
+        "torch-cpu-qr-svd_flip": PCATorch(n_components=2, qr=True, svd_flip=True, device="cpu"),
     }
 
     for name, pca in pcas.items():

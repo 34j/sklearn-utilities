@@ -19,14 +19,12 @@ class StandardScalerVar(StandardScaler):
         super().__init__(copy=copy, with_mean=with_mean, with_std=with_std)
         self.var_type = var_type
 
-    def inverse_transform(
-        self, X: Any, copy: bool | None = None, return_std: bool = False
-    ) -> Any:
+    def inverse_transform(self, X: Any, copy: bool | None = None, return_std: bool = False) -> Any:
         if return_std:
             if isinstance(X, tuple):
-                return self.inverse_transform(
-                    X[0], copy, False
-                ), self.inverse_transform(X[1], copy, True)
+                return self.inverse_transform(X[0], copy, False), self.inverse_transform(
+                    X[1], copy, True
+                )
             prev_with_mean = self.with_mean
             self.with_mean = False
             for i in range(1 if self.var_type == "std" else 2):

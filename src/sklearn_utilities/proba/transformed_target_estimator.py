@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 import warnings
-from typing import Any, Callable, Generic
+from collections.abc import Callable
+from typing import Any, Generic, Self
 
 from pandas import Series
-from typing_extensions import Self
 
 from ..estimator_wrapper import EstimatorWrapperBase
 from ..id_transformer import IdTransformer
@@ -52,16 +52,13 @@ class TransformedTargetEstimatorVar(
         return self
 
     def predict(self, X: TX, **predict_params: Any) -> TY | tuple[TY, TY]:
-        if predict_params.get("return_std", False):
+        if predict_params.get("return_std"):
             pred, pred_std = self.estimator.predict(X, **predict_params)
             if self.inverse_transform_separately:
                 return _parse_2d(self.transformer.inverse_transform)(pred), _parse_2d(
                     self.transformer.inverse_transform
                 )(pred_std, return_std=True)
-            else:
-                return _parse_2d(self.transformer.inverse_transform)(
-                    (pred, pred_std), return_std=True
-                )
+            return _parse_2d(self.transformer.inverse_transform)((pred, pred_std), return_std=True)
         pred = self.estimator.predict(X, **predict_params)
         return _parse_2d(self.transformer.inverse_transform)(pred)
 
