@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-from typing import Any, Generic
+from typing import Any, Generic, Self
 
 from pandas import DataFrame
-from typing_extensions import Self
 
 from .estimator_wrapper import EstimatorWrapperBase
 from .types import TEstimator
@@ -19,6 +18,7 @@ class DropMissingRowsY(EstimatorWrapperBase[TEstimator], Generic[TEstimator]):
         ----------
         estimator : TEstimator
             The estimator to be wrapped.
+
         """
         super().__init__(estimator)
 

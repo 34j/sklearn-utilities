@@ -1,12 +1,13 @@
 from __future__ import annotations
 
 import math
-from typing import Any, Generic, Literal, Sequence
+from collections.abc import Sequence
+from typing import Any, Generic, Literal
 
 import numpy as np
 import torch
-import torch.nn as nn
 import torch.nn.functional as F
+from torch import nn
 
 from ...types import TX, TY, TEstimator
 from .reshaper import SkorchCNNReshaper, SkorchReshaper
@@ -28,6 +29,7 @@ class AllowNan(nn.Module):
             If 'left', allows NaNs in the first argument of the loss function.
             If 'right', allows NaNs in the second argument of the loss function.
             If 'both', allows NaNs in both arguments of the loss function.
+
         """
         super().__init__()
         self.loss = loss
@@ -58,6 +60,7 @@ class LNErrors(nn.Module):
         ----------
         n : int, optional
             The exponent, by default 2
+
         """
         super().__init__()
         self.n = n
@@ -70,9 +73,10 @@ class LogCoshErrors(nn.Module):
     """Log cosh errors.
     Loss = log(cosh(errors + eps))
 
-    See also
+    See Also
     --------
     https://datascience.stackexchange.com/questions/96271/logcoshloss-on-pytorch
+
     """
 
     def __init__(self, *, softplus: bool = True, eps: float | None = None) -> None:
@@ -81,7 +85,9 @@ class LogCoshErrors(nn.Module):
         Parameters
         ----------
         softplus : bool, optional
-            If True, uses softplus to get stable results, by default True"""
+            If True, uses softplus to get stable results, by default True
+
+        """
         super().__init__()
         self.softplus = softplus
         self.eps = eps
@@ -90,18 +96,18 @@ class LogCoshErrors(nn.Module):
         x = y_pred - y_true
         if self.softplus:
             return x + F.softplus(-2.0 * x) - math.log(2.0)
-        else:
-            eps = self.eps or torch.finfo(x.dtype).eps
-            return torch.log(torch.cosh(x + eps))
+        eps = self.eps or torch.finfo(x.dtype).eps
+        return torch.log(torch.cosh(x + eps))
 
 
 class XTanhErrors(nn.Module):
     """XTanh errors.
     Loss = x * tanh(x)
 
-    See also
+    See Also
     --------
     https://github.com/tuantle/regression-losses-pytorch
+
     """
 
     def forward(self, y_pred: torch.Tensor, y_true: torch.Tensor) -> torch.Tensor:
@@ -113,9 +119,10 @@ class XSigmoidErrors(nn.Module):
     """XSigmoid errors.
     Loss = x * (2 * sigmoid(x) - 1)
 
-    See also
+    See Also
     --------
     https://github.com/tuantle/regression-losses-pytorch
+
     """
 
     def forward(self, y_pred: torch.Tensor, y_true: torch.Tensor) -> torch.Tensor:
@@ -127,9 +134,10 @@ class AlgebraicErrors(nn.Module):
     """Algebraic errors.
     Loss = x^2 / sqrt(1 + x^2)
 
-    See also
+    See Also
     --------
     https://github.com/tuantle/regression-losses-pytorch
+
     """
 
     def forward(self, y_pred: torch.Tensor, y_true: torch.Tensor) -> torch.Tensor:
@@ -160,9 +168,7 @@ class AsymmetricLoss(nn.Module):
         )
 
 
-def _reshape_y_pred(
-    y_pred: torch.Tensor, y_true_shape: torch.Size, n_ts: int
-) -> torch.Tensor:
+def _reshape_y_pred(y_pred: torch.Tensor, y_true_shape: torch.Size, n_ts: int) -> torch.Tensor:
     if y_pred.ndim == 2 and len(y_true_shape) == 2:
         # [B, Ts * Ny] -> [B, Ts, Ny]
         if y_pred.shape[1] == n_ts * y_true_shape[1]:
@@ -207,11 +213,11 @@ class AsymmetricLosses(nn.Module):
     Returns
     -------
     torch.Tensor
-        0-dim tensor with the loss."""
+        0-dim tensor with the loss.
 
-    def __init__(
-        self, *, ts: Sequence[float] | int, loss: nn.Module = LNErrors(1)
-    ) -> None:
+    """
+
+    def __init__(self, *, ts: Sequence[float] | int, loss: nn.Module = LNErrors(1)) -> None:
         """Asymmetric loss with multioutput support.
 
         Parameters
@@ -222,18 +228,16 @@ class AsymmetricLosses(nn.Module):
             `np.linspace(1 / (ts * 2), 1 - 1 / (ts * 2), ts)` is used.
         loss : nn.Module, optional
             The loss function to use, by default LNErrors(1)
+
         """
         super().__init__()
         if isinstance(ts, int):
             ts = list(np.linspace(1 / (ts * 2), 1 - 1 / (ts * 2), ts))
         self.ts = ts
         self.loss = loss
-        self.losses = nn.ModuleList(
-            [
-                AsymmetricLoss(t=t, loss_pred_grater=loss, loss_pred_less=loss)
-                for t in ts
-            ]
-        )
+        self.losses = nn.ModuleList([
+            AsymmetricLoss(t=t, loss_pred_grater=loss, loss_pred_less=loss) for t in ts
+        ])
 
     def forward(self, y_pred: torch.Tensor, y_true: torch.Tensor) -> torch.Tensor:
         y_pred = _reshape_y_pred(y_pred, y_true.shape, len(self.ts))
@@ -242,9 +246,7 @@ class AsymmetricLosses(nn.Module):
 
         # calculate losses
         losses = []
-        for y_pred_q, loss in zip(
-            torch.moveaxis(y_pred, self.ts_axis_, 0), self.losses
-        ):
+        for y_pred_q, loss in zip(torch.moveaxis(y_pred, self.ts_axis_, 0), self.losses):
             losses.append(loss(y_pred_q, y_true))
         return torch.stack(losses).mean()
 
@@ -289,8 +291,7 @@ class SkorchReshaperProbaMixin(Generic[TEstimator]):
     ) -> TY:
         if hasattr(np, type_):
             return getattr(np, type_)(y, axis=axis)
-        else:
-            raise ValueError(f"Unknown type: {type_}")
+        raise ValueError(f"Unknown type: {type_}")
 
     def predict(
         self,
@@ -345,7 +346,7 @@ class SkorchReshaperProba(  # type: ignore
         m_type: Literal["mean", "median", "nanmean", "nanmedian"] = "mean",
         var_type: Literal["var", "std", "ptp", "nanvar", "nanstd"] = "std",
     ) -> None:
-        """skorch wrapper that reshapes tabular data for NNs
+        """Skorch wrapper that reshapes tabular data for NNs
         and supports quantile predictions.
         X: [B, F] -> [B, F]
         y: [B] -> [B, 1] or [B, NY] -> [B, NY] where
@@ -374,6 +375,7 @@ class SkorchReshaperProba(  # type: ignore
         >>> est = SkorchReshaperProba(NeuralNet(module=net, criterion=AsymmetricLosses(ts=5)))
         >>> est.fit(X_train, Y_train)
         >>> y_pred, y_std = est.predict(X_test, return_std=True)
+
         """
         super().__init__(estimator, m_type=m_type, var_type=var_type)
 
@@ -391,7 +393,7 @@ class SkorchCNNReshaperProba(  # type: ignore
         m_type: Literal["mean", "median", "nanmean", "nanmedian"] = "mean",
         var_type: Literal["var", "std", "ptp", "nanvar", "nanstd"] = "std",
     ) -> None:
-        """skorch wrapper that reshapes tabular data for CNNs using sliding windows
+        """Skorch wrapper that reshapes tabular data for CNNs using sliding windows
         and supports quantile predictions.
         X: [B, F] -> [B - H + 1, 1, H, F] if window_size is not None (for Conv2d)
            [B, F] -> [B, 1, F] if window_size is None (for Conv1d)
@@ -425,7 +427,6 @@ class SkorchCNNReshaperProba(  # type: ignore
         >>> est = SkorchCNNReshaperProba(NeuralNet(module=net, criterion=AsymmetricLosses(ts=5)))
         >>> est.fit(X_train, Y_train)
         >>> y_pred, y_std = est.predict(X_test, return_std=True)
+
         """
-        super().__init__(
-            estimator, m_type=m_type, var_type=var_type, window_size=window_size
-        )
+        super().__init__(estimator, m_type=m_type, var_type=var_type, window_size=window_size)

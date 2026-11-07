@@ -1,15 +1,15 @@
 from __future__ import annotations
 
+from collections.abc import Callable
 from logging import getLogger
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any, Self
 
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.figure import Figure
 from pandas import DataFrame, Series, Timestamp
 from sklearn.base import BaseEstimator, TransformerMixin
-from typing_extensions import Self
 
 from .types import TXPandas
 
@@ -28,13 +28,14 @@ class ReportNonFinite(BaseEstimator, TransformerMixin):
         plot: bool = True,
         calc_corr: bool = False,
         callback: Callable[[dict[str, DataFrame | Series]], None] | None = None,
-        callback_figure: Callable[[Figure], None]
-        | None = lambda fig: Path("sklearn_utilities_info/ReportNonFinite").mkdir(  # type: ignore
-            parents=True, exist_ok=True
-        )
-        or fig.savefig(
-            Path("sklearn_utilities_info/ReportNonFinite")
-            / f"{Timestamp.now().isoformat().replace(':', '-')}.png"
+        callback_figure: Callable[[Figure], None] | None = lambda fig: (
+            Path("sklearn_utilities_info/ReportNonFinite").mkdir(  # type: ignore
+                parents=True, exist_ok=True
+            )
+            or fig.savefig(
+                Path("sklearn_utilities_info/ReportNonFinite")
+                / f"{Timestamp.now().isoformat().replace(':', '-')}.png"
+            )
         ),
     ) -> None:
         """Report non-finite values in X or y.
@@ -59,6 +60,7 @@ class ReportNonFinite(BaseEstimator, TransformerMixin):
             Path("sklearn-utilities/ReportNonFinite").mkdir(parents=True, exist_ok=True)
             or fig.savefig(Path("sklearn-utilities/ReportNonFinite") /
             f"{Timestamp.now().isoformat().replace(':', '-')}.png")`
+
         """
         self.on_fit = on_fit
         self.on_fit_y = on_fit_y
@@ -73,20 +75,20 @@ class ReportNonFinite(BaseEstimator, TransformerMixin):
             try:
                 self._report(X, "fit")
             except Exception as e:
-                LOG.warning(f"Failed to report non-finite values in X during fit: {e}")
+                LOG.warning("Failed to report non-finite values in X during fit: %s", e)
                 LOG.exception(e)
 
         if self.on_fit_y:
             try:
                 DataFrame(y)
             except Exception as e:
-                LOG.warning(f"Failed to convert y to DataFrame during fit: {e}")
+                LOG.warning("Failed to convert y to DataFrame during fit: %s", e)
                 LOG.exception(e)
 
             try:
                 self._report(DataFrame(y), "fit_y")
             except Exception as e:
-                LOG.warning(f"Failed to report non-finite values in y during fit: {e}")
+                LOG.warning("Failed to report non-finite values in y during fit: %s", e)
                 LOG.exception(e)
         return self
 
@@ -95,9 +97,7 @@ class ReportNonFinite(BaseEstimator, TransformerMixin):
             try:
                 self._report(X, "transform")
             except Exception as e:
-                LOG.warning(
-                    f"Failed to report non-finite values in X during transform: {e}"
-                )
+                LOG.warning("Failed to report non-finite values in X during transform: %s", e)
                 LOG.exception(e)
         return X
 
@@ -115,6 +115,7 @@ class ReportNonFinite(BaseEstimator, TransformerMixin):
         -------
         TXPandas
             Input data.
+
         """
         is_na = X.isna()
         is_inf = X.isin([np.inf, -np.inf])
@@ -127,8 +128,7 @@ class ReportNonFinite(BaseEstimator, TransformerMixin):
             "inf_rate_by_row": is_inf.mean(axis=1),
         }
         d = d | {
-            "non_finite_rate_by_column": d["nan_rate_by_column"]
-            + d["inf_rate_by_column"],
+            "non_finite_rate_by_column": d["nan_rate_by_column"] + d["inf_rate_by_column"],
             "non_finite_rate_by_row": d["nan_rate_by_row"] + d["inf_rate_by_row"],
         }
 
@@ -137,7 +137,7 @@ class ReportNonFinite(BaseEstimator, TransformerMixin):
             d["inf_rate_corr_by_column"] = is_inf.corr()
             d["non_finite_rate_corr_by_column"] = is_non_finite.corr()
 
-        LOG.info(f"Non-finite values in X during {caller}: {d}")
+        LOG.info("Non-finite values in X during %s: %s", caller, d)
 
         if self.plot:
             import seaborn as sns
@@ -187,17 +187,11 @@ class ReportNonFinite(BaseEstimator, TransformerMixin):
                 ylabel="Non-finite rate",
             )
             if self.calc_corr:
-                sns.heatmap(
-                    d["nan_rate_corr_by_column"], ax=axes[0, 2], vmin=-1, vmax=1
-                )
+                sns.heatmap(d["nan_rate_corr_by_column"], ax=axes[0, 2], vmin=-1, vmax=1)
                 axes[0, 2].set_title("NaN rate Corr By column")
-                sns.heatmap(
-                    d["inf_rate_corr_by_column"], ax=axes[1, 2], vmin=-1, vmax=1
-                )
+                sns.heatmap(d["inf_rate_corr_by_column"], ax=axes[1, 2], vmin=-1, vmax=1)
                 axes[1, 2].set_title("Inf rate Corr By column")
-                sns.heatmap(
-                    d["non_finite_rate_corr_by_column"], ax=axes[2, 2], vmin=-1, vmax=1
-                )
+                sns.heatmap(d["non_finite_rate_corr_by_column"], ax=axes[2, 2], vmin=-1, vmax=1)
                 axes[2, 2].set_title("Non-finite rate Corr By column")
 
             # tight layout

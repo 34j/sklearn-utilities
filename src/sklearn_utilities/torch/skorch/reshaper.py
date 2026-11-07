@@ -1,13 +1,12 @@
 from __future__ import annotations
 
 import warnings
-from typing import Any, Generic, TypeVar
+from typing import Any, Generic, Self, TypeVar
 
 import numpy as np
 import torch
 from numpy.lib.stride_tricks import sliding_window_view
 from skorch import NeuralNet
-from typing_extensions import Self
 
 from sklearn_utilities.estimator_wrapper import EstimatorWrapperBase
 from sklearn_utilities.types import TX, TY
@@ -19,7 +18,7 @@ class SkorchReshaper(EstimatorWrapperBase[TEstimator], Generic[TEstimator]):
     """skorch wrapper that reshapes tabular data for NNs."""
 
     def __init__(self, estimator: TEstimator) -> None:
-        """skorch wrapper that reshapes tabular data for NNs.
+        """Skorch wrapper that reshapes tabular data for NNs.
         X: [B, F] -> [B, F]
         y: [B] -> [B, 1] or [B, NY] -> [B, NY] where
         B: batch, F: features, NY: number of outputs
@@ -28,6 +27,7 @@ class SkorchReshaper(EstimatorWrapperBase[TEstimator], Generic[TEstimator]):
         ----------
         estimator : TEstimator
             The estimator to wrap.
+
         """
         super().__init__(estimator)
         if self.estimator.device == "cpu":
@@ -61,9 +61,8 @@ class SkorchReshaper(EstimatorWrapperBase[TEstimator], Generic[TEstimator]):
         )
         X_ = X_.astype(np.float32)
         y = self.estimator.predict(X_, **predict_params)
-        if self.y_ndim_ == 1 and y.shape[1] == 1:
-            if y.shape[1] == 1:
-                y = y.squeeze(axis=1)
+        if self.y_ndim_ == 1 and y.shape[1] == 1 and y.shape[1] == 1:
+            y = y.squeeze(axis=1)
         return y
 
 
@@ -71,7 +70,7 @@ class SkorchCNNReshaper(EstimatorWrapperBase[TEstimator], Generic[TEstimator]):
     """skorch wrapper that reshapes tabular data for CNNs using sliding windows."""
 
     def __init__(self, estimator: TEstimator, *, window_size: int | None) -> None:
-        """skorch wrapper that reshapes tabular data for CNNs using sliding windows.
+        """Skorch wrapper that reshapes tabular data for CNNs using sliding windows.
         X: [B, F] -> [B - H + 1, 1, H, F] if window_size is not None (for Conv2d)
            [B, F] -> [B, 1, F] if window_size is None (for Conv1d)
         y: [B] -> [B - H + 1, 1] or [B, NY] -> [B - H + 1, NY] where
@@ -85,6 +84,7 @@ class SkorchCNNReshaper(EstimatorWrapperBase[TEstimator], Generic[TEstimator]):
             The size of the sliding window.
             Make sure that CNN kernel size is equal or larger than this.
             If None, no sliding window is applied.
+
         """
         self.estimator = estimator
         self.window_size = window_size
@@ -123,15 +123,12 @@ class SkorchCNNReshaper(EstimatorWrapperBase[TEstimator], Generic[TEstimator]):
         return self
 
     def predict(self, X: TX, **predict_params: Any) -> TY:
-        X_ = self._validate_data(
-            X, force_all_finite=False, allow_nd=True, ensure_2d=False
-        )
+        X_ = self._validate_data(X, force_all_finite=False, allow_nd=True, ensure_2d=False)
         X_ = X_.astype(np.float32)
         if self.window_size is not None:
             X_ = sliding_window_view(X_, self.window_size, axis=0)
         X_ = np.expand_dims(X_, axis=1)
         y = self.estimator.predict(X_, **predict_params)
-        if self.y_ndim_ == 1:
-            if y.shape[1] == 1:
-                y = y.squeeze(axis=1)
+        if self.y_ndim_ == 1 and y.shape[1] == 1:
+            y = y.squeeze(axis=1)
         return y

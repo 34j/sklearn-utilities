@@ -13,18 +13,16 @@ from .proba import (
 from .reshaper import SkorchCNNReshaper, SkorchReshaper
 
 __all__ = [
-    "SkorchReshaper",
-    "SkorchCNNReshaper",
-    "SkorchReshaperProba",
-    "SkorchCNNReshaperProba",
-    "LNErrors",
-    "LogCoshErrors",
-    "XSigmoidErrors",
-    "XTanhErrors",
     "AlgebraicErrors",
     "AllowNan",
     "AsymmetricLoss",
     "AsymmetricLosses",
-    "SkorchReshaperProba",
+    "LNErrors",
+    "LogCoshErrors",
+    "SkorchCNNReshaper",
     "SkorchCNNReshaperProba",
+    "SkorchReshaper",
+    "SkorchReshaperProba",
+    "XSigmoidErrors",
+    "XTanhErrors",
 ]

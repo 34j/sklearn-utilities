@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-from typing import Any, TypeVar
+from typing import Any, Self, TypeVar
 
 from sklearn.base import BaseEstimator, TransformerMixin
-from typing_extensions import Self
 
 T = TypeVar("T", bound=Any)
 

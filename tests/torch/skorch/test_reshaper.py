@@ -1,9 +1,9 @@
 import numpy as np
-import torch.nn as nn
 from sklearn.datasets import load_diabetes
 from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import train_test_split
 from skorch import NeuralNet
+from torch import nn
 
 from sklearn_utilities.torch.skorch.reshaper import SkorchCNNReshaper, SkorchReshaper
 
@@ -30,9 +30,7 @@ def test_reshaper_multioutput():
 
 def test_cnn_reshaper():
     net = nn.Sequential(nn.LazyConv2d(2, 3), nn.GELU(), nn.Flatten(), nn.LazyLinear(1))
-    est = SkorchCNNReshaper(
-        NeuralNet(module=net, criterion=nn.MSELoss()), window_size=5
-    )
+    est = SkorchCNNReshaper(NeuralNet(module=net, criterion=nn.MSELoss()), window_size=5)
     est.fit(X_train, y_train)
     y_pred = est.predict(X_test)
     mean_squared_error(y_test[5 - 1 :], y_pred)

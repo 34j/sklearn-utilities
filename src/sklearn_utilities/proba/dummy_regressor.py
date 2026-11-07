@@ -1,13 +1,12 @@
 from __future__ import annotations
 
-from typing import Literal
+from typing import Literal, Self
 
 import numpy as np
 from numpy import ndarray
 from numpy.typing import ArrayLike
 from pandas import DataFrame, Series
 from sklearn.dummy import DummyRegressor
-from typing_extensions import Self
 
 from ..utils import drop_X_y
 
@@ -18,8 +17,8 @@ class DummyRegressorVar(DummyRegressor):
     def __init__(
         self,
         *,
-        strategy: Literal["mean", "median", "quantile", "constant", "mean"] = "mean",
-        constant: float | None | ArrayLike | int = None,
+        strategy: Literal["mean", "median", "quantile", "constant"] = "mean",
+        constant: float | ArrayLike | None = None,
         quantile: float | None = None,
         allow_nan: bool = True,
     ) -> None:
@@ -43,9 +42,7 @@ class DummyRegressorVar(DummyRegressor):
         self._var_regressor.fit(X, y, sample_weight)
         return super().fit(X, y, sample_weight)
 
-    def predict(
-        self, X: ArrayLike, return_std: bool = False
-    ) -> ndarray | tuple[ndarray, ndarray]:
+    def predict(self, X: ArrayLike, return_std: bool = False) -> ndarray | tuple[ndarray, ndarray]:
         return super().predict(X, False), self.predict_var(X)
 
     def predict_var(self, X: ArrayLike) -> ArrayLike:

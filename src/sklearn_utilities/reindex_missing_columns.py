@@ -1,11 +1,11 @@
 from __future__ import annotations
 
 import warnings
-from typing import Any, Callable, Literal
+from collections.abc import Callable
+from typing import Any, Literal, Self
 
 from pandas import DataFrame, Index
 from sklearn.base import BaseEstimator, TransformerMixin
-from typing_extensions import Self
 
 from .types import TXPandas
 
@@ -16,8 +16,7 @@ class ReindexMissingColumns(BaseEstimator, TransformerMixin):
     def __init__(
         self,
         *,
-        if_missing: Literal["warn", "raise"]
-        | Callable[[Index[Any], Index[Any]], None] = "warn",
+        if_missing: Literal["warn", "raise"] | Callable[[Index[Any], Index[Any]], None] = "warn",
         reindex_kwargs: dict[
             Literal["method", "copy", "level", "fill_value", "limit", "tolerance"], Any
         ] = {},
@@ -32,6 +31,7 @@ class ReindexMissingColumns(BaseEstimator, TransformerMixin):
         reindex_kwargs : dict[Literal['method', 'copy', 'level', 'fill_value',
         'limit', 'tolerance'], Any], optional
             Keyword arguments to pass to reindex, by default {}
+
         """
         self.if_missing = if_missing
         self.reindex_kwargs = reindex_kwargs
