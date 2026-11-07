@@ -184,15 +184,13 @@ class PCATorch(nn.Module, BaseEstimator, TransformerMixin):
         to_svd_flip = self.svd_flip
         if to_svd_flip is None:
             to_svd_flip = not self.qr
-        if self.qr:
+        if self.qr and not to_svd_flip:
             Q, R = torch.linalg.qr(Xc)
-            U, _, Vt = torch.linalg.svd(R, full_matrices=False)
-            if to_svd_flip:
-                U, Vt = svd_flip(Q @ U, Vt)
+            _, _, Vt = torch.linalg.svd(R, full_matrices=False)
         else:
             U, _, Vt = torch.linalg.svd(Xc, full_matrices=False)
             if to_svd_flip:
-                U, Vt = svd_flip(U, Vt, u_based_decision=False)
+                _, Vt = svd_flip(U, Vt, u_based_decision=False)
         self.register_buffer("components_", Vt[:d])
         return self
 
