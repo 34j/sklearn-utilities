@@ -13,6 +13,8 @@ concurrency:
 jobs:
   ci:
     uses: 34j/.github/.github/workflows/python-package-ci.yml@main
+    with:
+      command_macos_test: brew install libomp
     permissions:
       attestations: write
       contents: write
