@@ -1,1 +1,151 @@
 # Changelog
+
+## v0.5.14 (2025-05-26)
+
+### Fix
+
+- Update dependency typing-extensions to v4.13.2 (#109) ([`cf14694`](https://github.com/34j/sklearn-utilities/commit/cf146949e10fb911a1cc1fcb9f77c1a68ddc7465))
+
+## v0.5.13 (2025-05-26)
+
+### Fix
+
+- Update dependency lightgbm to v4.6.0 (#108) ([`547f9ca`](https://github.com/34j/sklearn-utilities/commit/547f9ca04a3eea581a7ee82a13f2a0e0ab8c5194))
+
+## v0.5.12 (2025-01-29)
+
+### Fix
+
+- Update dependency typing-extensions to v4.12.2 (#95) ([`059720e`](https://github.com/34j/sklearn-utilities/commit/059720e867ee49fc50ad8092099f93958d2cbf67))
+
+## v0.5.11 (2024-11-01)
+
+### Fix
+
+- Update dependency lightgbm to v4.5.0 (#91) ([`31ec7d5`](https://github.com/34j/sklearn-utilities/commit/31ec7d5153e63d894009ea61d5da34fe17099a98))
+
+## v0.5.10 (2024-10-30)
+
+### Fix
+
+- Update dependency tqdm-joblib to ^0.0.4 (#81) ([`6ae37c8`](https://github.com/34j/sklearn-utilities/commit/6ae37c805751e562b1572370c8d5d39142e8c19b))
+
+## v0.5.9 (2024-10-30)
+
+### Fix
+
+- Update dependency pandas to v2.2.3 (#80) ([`4c8651c`](https://github.com/34j/sklearn-utilities/commit/4c8651ce5a2a61560cc1e20484b467e20fb325a4))
+
+## v0.5.8 (2024-03-26)
+
+### Fix
+
+- Update dependency typing-extensions to v4.10.0 (#74) ([`00053f1`](https://github.com/34j/sklearn-utilities/commit/00053f104efa1381cf60977af6f88a76647bc57d))
+
+## v0.5.7 (2024-03-25)
+
+### Fix
+
+- Update dependency pandas to v2.2.1 (#69) ([`45f91dd`](https://github.com/34j/sklearn-utilities/commit/45f91dd4adaeff0e8e87c677c52995a091a78b56))
+
+## v0.5.6 (2024-01-26)
+
+### Fix
+
+- Update dependency lightgbm to v4.3.0 (#57) ([`8c455d9`](https://github.com/34j/sklearn-utilities/commit/8c455d90a5026f240f8b9094df51d57bfa0bbd15))
+
+## v0.5.5 (2024-01-20)
+
+### Fix
+
+- Update dependency pandas to v2.2.0 (#54) ([`67b0961`](https://github.com/34j/sklearn-utilities/commit/67b09610bb85c2c517237fdbd9790debabc1fd4b))
+
+## v0.5.4 (2024-01-18)
+
+### Fix
+
+- Update dependency scikit-learn to v1.4.0 (#53) ([`3300e61`](https://github.com/34j/sklearn-utilities/commit/3300e61a71133ce6dae18c9bd1f8b34000ab8759))
+
+## v0.5.3 (2023-12-22)
+
+### Fix
+
+- Update dependency lightgbm to v4.2.0 (#44) ([`a07b964`](https://github.com/34j/sklearn-utilities/commit/a07b9642125f620e144c7014ed0e576a4e28c120))
+
+## v0.5.2 (2023-12-10)
+
+### Fix
+
+- Update dependency typing-extensions to v4.9.0 (#37) ([`66f7937`](https://github.com/34j/sklearn-utilities/commit/66f7937e282c557914d3e507e1a372572ec844df))
+
+## v0.5.1 (2023-12-08)
+
+### Fix
+
+- Update dependency pandas to v2.1.4 (#33) ([`b3da79e`](https://github.com/34j/sklearn-utilities/commit/b3da79ebaf51c3075baf50fccb6a23cbcb71d372))
+
+## v0.5.0 (2023-11-19)
+
+### Feature
+
+- Add `reindexmissingcolumns` and `reportnonfinite` (#27) ([`7d0e1f5`](https://github.com/34j/sklearn-utilities/commit/7d0e1f5a49136aace1cc4b2e5dc79264a6ab2229))
+
+## v0.4.2 (2023-11-10)
+
+### Fix
+
+- Update dependency pandas to v2.1.3 (#23) ([`60d263e`](https://github.com/34j/sklearn-utilities/commit/60d263e27b01a9d45a5034630a669f4bb2c23856))
+
+## v0.4.1 (2023-11-05)
+
+### Fix
+
+- Not only `iterations` (#21) ([`563648e`](https://github.com/34j/sklearn-utilities/commit/563648e985a1897f7aa7480319f9f2977c8183fb))
+
+## v0.4.0 (2023-11-05)
+
+### Feature
+
+- Add `evalsetwrapper` and `catboostprogressbarwrapper` (#20) ([`c00e132`](https://github.com/34j/sklearn-utilities/commit/c00e132b32a3a481a6f88cd9a824903c130d3afa))
+
+## v0.3.1 (2023-11-04)
+
+### Fix
+
+- Do not clone estimator (#19) ([`fad15a1`](https://github.com/34j/sklearn-utilities/commit/fad15a1c3ce93dd941294bc25dc82a6dd902bfca))
+
+## v0.3.0 (2023-10-29)
+
+### Feature
+
+- Add more errors and fix imports (#16) ([`7781834`](https://github.com/34j/sklearn-utilities/commit/7781834fccbe4781ad7ab80e78d41c4899697b98))
+
+## v0.2.3 (2023-10-27)
+
+### Fix
+
+- Update dependency pandas to v2.1.2 (#12) ([`2c2e109`](https://github.com/34j/sklearn-utilities/commit/2c2e109e1599d06acba7a9e8c71f60226d443d6c))
+
+## v0.2.2 (2023-10-26)
+
+### Fix
+
+- Fix multiple problems (#9) ([`b0eb583`](https://github.com/34j/sklearn-utilities/commit/b0eb5831e7076395bd2b058a31dc1bca3c967a1e))
+
+## v0.2.1 (2023-10-26)
+
+### Fix
+
+- Make svd_flip optional (#6) ([`6f8ea02`](https://github.com/34j/sklearn-utilities/commit/6f8ea02d0b863be4718d46ec0d7477d682b4778f))
+
+## v0.2.0 (2023-10-26)
+
+### Feature
+
+- Add more feats (#2) ([`7d0fec9`](https://github.com/34j/sklearn-utilities/commit/7d0fec9253676d793a0f6543aece8489c4f58ac7))
+
+## v0.1.0 (2023-10-22)
+
+### Feature
+
+- Add main feat (#1) ([`1dedadd`](https://github.com/34j/sklearn-utilities/commit/1dedadd39b956aebd1b8ec480586bbdc44627007))
