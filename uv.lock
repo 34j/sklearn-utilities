@@ -1815,15 +1815,15 @@ docs = [
 
 [package.metadata]
 requires-dist = [
-    { name = "catboost", marker = "extra == 'catboost'", specifier = ">=1.2.2,<1.3" },
-    { name = "lightgbm", specifier = ">=4.1,<4.7" },
-    { name = "pandas", specifier = ">=2.1.1,<3" },
-    { name = "scikit-learn", specifier = ">=1.3.1,<1.7" },
-    { name = "seaborn", marker = "extra == 'seaborn'", specifier = ">=0.13,<0.14" },
-    { name = "skorch", marker = "extra == 'torch'", specifier = ">=1,<2" },
-    { name = "torch", marker = "extra == 'torch'", specifier = ">=2.1,<3" },
-    { name = "tqdm-joblib", specifier = ">=0.0.4,<0.1" },
-    { name = "typing-extensions", specifier = ">=4.8,<5" },
+    { name = "catboost", marker = "extra == 'catboost'", specifier = ">=1.2.2" },
+    { name = "lightgbm", specifier = ">=4.1" },
+    { name = "pandas", specifier = ">=2.1.1" },
+    { name = "scikit-learn", specifier = ">=1.3.1" },
+    { name = "seaborn", marker = "extra == 'seaborn'", specifier = ">=0.13" },
+    { name = "skorch", marker = "extra == 'torch'", specifier = ">=1" },
+    { name = "torch", marker = "extra == 'torch'", specifier = ">=2.1" },
+    { name = "tqdm-joblib", specifier = ">=0.0.4" },
+    { name = "typing-extensions", specifier = ">=4.8" },
 ]
 provides-extras = ["catboost", "seaborn", "torch"]
 
