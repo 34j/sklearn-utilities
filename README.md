@@ -82,16 +82,3 @@ See [Docs](https://sklearn-utilities.readthedocs.io/en/latest/sklearn_utilities.
 ## See also
 
 - [ml-tooling/best-of-ml-python](https://github.com/ml-tooling/best-of-ml-python)
-
-## Contributors ✨
-
-Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
-
-<!-- prettier-ignore-start -->
-<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- markdownlint-disable -->
-<!-- markdownlint-enable -->
-<!-- ALL-CONTRIBUTORS-LIST:END -->
-<!-- prettier-ignore-end -->
-
-This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!

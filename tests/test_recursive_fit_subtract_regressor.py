@@ -10,9 +10,7 @@ from sklearn_utilities.recursive_fit_subtract_regressor import (
 def test_regressor():
     X, y = load_diabetes(return_X_y=True, as_frame=True)
     X_train, X_test, y_train, y_test = train_test_split(X, y)
-    y_pred_baseline = (
-        LGBMRegressor(learning_rate=0.01).fit(X_train, y_train).predict(X_test)
-    )
+    y_pred_baseline = LGBMRegressor(learning_rate=0.01).fit(X_train, y_train).predict(X_test)
     y_pred = (
         RecursiveFitSubtractRegressor(
             estimators=[

@@ -1,19 +1,22 @@
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Self
 
 import numpy as np
 from sklearn.feature_selection import GenericUnivariateSelect
-from typing_extensions import Self
 
 
 class LooseGenericUnivariateSelect(GenericUnivariateSelect):
     """A GenericUnivariateSelect that does not require y
-    and accepts missing values in X."""
+    and accepts missing values in X.
+    """
 
     def fit(self, X: Any, y: Any = None) -> Self:
         y = np.ones(X.shape[0])
-        return super().fit(X, y)
+        missing_rate = np.isfinite(np.asarray(X)).mean(axis=0)
+        self.score_func = lambda _X, _y: (missing_rate, np.ones_like(missing_rate))
+        X_filled = X.fillna(0) if hasattr(X, "fillna") else np.nan_to_num(X)
+        return super().fit(X_filled, y)
 
     def _validate_data(self, X: Any, y: Any = None, *args: Any, **kwargs: Any) -> Any:
         kwargs["force_all_finite"] = False
@@ -34,6 +37,7 @@ def DropMissingColumns(
     threshold_not_missing : float, optional
         If the ratio of non-missing values is below or equals to this threshold,
         the column is dropped, by default 0.9
+
     """
     if threshold_not_missing > 1:
         return LooseGenericUnivariateSelect(

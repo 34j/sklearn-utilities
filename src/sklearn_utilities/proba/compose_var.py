@@ -1,17 +1,13 @@
 from __future__ import annotations
 
-from typing import Any, Generic, Literal, overload
-
-from typing_extensions import Self
+from typing import Any, Generic, Literal, Self, overload
 
 from ..estimator_wrapper import EstimatorWrapperBase
 from ..types import TX, TY, TEstimator, TEstimatorVar
 from .dummy_regressor import DummyRegressorVar
 
 
-class ComposeVarEstimator(
-    EstimatorWrapperBase[TEstimator], Generic[TEstimator, TEstimatorVar]
-):
+class ComposeVarEstimator(EstimatorWrapperBase[TEstimator], Generic[TEstimator, TEstimatorVar]):
     """Compose an estimator with a variance estimator."""
 
     def __init__(
@@ -25,6 +21,7 @@ class ComposeVarEstimator(
             The estimator to be wrapped.
         estimator_var : TEstimatorVar, optional
             The variance estimator to be wrapped, by default DummyRegressorVar()
+
         """
         super().__init__(estimator)
         self.estimator_var = estimator_var
@@ -35,20 +32,12 @@ class ComposeVarEstimator(
         return self
 
     @overload
-    def predict(
-        self, X: TX, return_std: Literal[False] = ..., **predict_params: Any
-    ) -> TY:
-        ...
+    def predict(self, X: TX, return_std: Literal[False] = ..., **predict_params: Any) -> TY: ...
 
     @overload
-    def predict(
-        self, X: TX, return_std: Literal[True], **predict_params: Any
-    ) -> tuple[TY, TY]:
-        ...
+    def predict(self, X: TX, return_std: Literal[True], **predict_params: Any) -> tuple[TY, TY]: ...
 
-    def predict(
-        self, X: TX, return_std: bool = False, **predict_params: Any
-    ) -> TY | tuple[TY, TY]:
+    def predict(self, X: TX, return_std: bool = False, **predict_params: Any) -> TY | tuple[TY, TY]:
         if return_std:
             return (
                 self.estimator.predict(X, **predict_params),

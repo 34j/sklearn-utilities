@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from numbers import Real
-from typing import Any, Literal
+from typing import Any, Literal, Self
 
 import numpy as np
 from lightgbm import LGBMRegressor
@@ -11,7 +11,6 @@ from sklearn.base import clone
 from sklearn.feature_selection import SelectFromModel
 from sklearn.utils import check_random_state
 from sklearn.utils._param_validation import Interval, StrOptions
-from typing_extensions import Self
 
 
 class DropByNoisePrediction(SelectFromModel):
@@ -60,13 +59,12 @@ class DropByNoisePrediction(SelectFromModel):
             Percent of features to keep, by default 10
         distribution : Literal['uniform', 'normal', 'arange'], optional
             Distribution to use for the target, by default &quot;uniform&quot;
+
         """
-        self._parameter_constraints.update(
-            {
-                "drop_rate": [Interval(Real, 0, 1, closed="both")],
-                "distribution": [StrOptions({"uniform", "normal", "arange"})],
-            }
-        )
+        self._parameter_constraints.update({
+            "drop_rate": [Interval(Real, 0, 1, closed="both")],
+            "distribution": [StrOptions({"uniform", "normal", "arange"})],
+        })
         estimator = (
             LGBMRegressor(n_jobs=-1, random_state=random_state)
             if estimator is None

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from logging import getLogger
-from typing import Any, Generic, TypeVar
+from typing import Any, Generic, Self, TypeVar
 
 import joblib
 import numpy as np
@@ -10,7 +10,6 @@ from pandas import DataFrame, Series
 from sklearn.base import BaseEstimator, RegressorMixin, clone
 from sklearn.utils.validation import check_is_fitted
 from tqdm_joblib import tqdm_joblib
-from typing_extensions import Self
 
 from ..types import TEstimator
 from ..utils import drop_X_y
@@ -75,6 +74,7 @@ class SmartMultioutputEstimator(BaseEstimator, RegressorMixin, Generic[TEstimato
             Whether to show progress bar, by default 1
         pass_numpy : bool, optional
             Whether to pass numpy arrays to the estimator, by default False
+
         """
         self.estimator = estimator
         self.n_jobs = n_jobs
@@ -106,18 +106,11 @@ class SmartMultioutputEstimator(BaseEstimator, RegressorMixin, Generic[TEstimato
 
     def predict(
         self, X: DataFrame, **predict_params: Any
-    ) -> (
-        DataFrame
-        | Series
-        | NDArray[Any]
-        | tuple[DataFrame | Series | NDArray[Any], ...]
-    ):
+    ) -> DataFrame | Series | NDArray[Any] | tuple[DataFrame | Series | NDArray[Any], ...]:
         check_is_fitted(self)
         X = X[self.feature_names_in_]
         preds = [est.predict(X, **predict_params) for est in self.estimators_]
-        preds_: DataFrame | Series | NDArray[Any] | tuple[
-            DataFrame | Series | NDArray[Any], ...
-        ]
+        preds_: DataFrame | Series | NDArray[Any] | tuple[DataFrame | Series | NDArray[Any], ...]
         if any(isinstance(pred, tuple) for pred in preds):
             # list of tuples of arrays to tuples of arrays
             preds_ = tuple(np.array(pred).T for pred in zip(*preds))
@@ -129,26 +122,17 @@ class SmartMultioutputEstimator(BaseEstimator, RegressorMixin, Generic[TEstimato
         check_is_fitted(self)
         X = X[self.feature_names_in_]
         y = y[self.y_names_in_]
-        return np.array(
-            [
-                est.score(X, y[col], **score_params)
-                for est, col in zip(self.estimators_, self.y_names_in_)
-            ]
-        )
+        return np.array([
+            est.score(X, y[col], **score_params)
+            for est, col in zip(self.estimators_, self.y_names_in_)
+        ])
 
     def predict_var(
         self, X: DataFrame, **predict_params: Any
-    ) -> (
-        DataFrame
-        | Series
-        | NDArray[Any]
-        | tuple[DataFrame | Series | NDArray[Any], ...]
-    ):
+    ) -> DataFrame | Series | NDArray[Any] | tuple[DataFrame | Series | NDArray[Any], ...]:
         check_is_fitted(self)
         X = X[self.feature_names_in_]
-        preds = np.array(
-            [est.predict_var(X, **predict_params) for est in self.estimators_]
-        ).T
+        preds = np.array([est.predict_var(X, **predict_params) for est in self.estimators_]).T
         return to_frame_or_series_tuple(preds, X.index, self.y_names_in_)
 
     def __iter__(self) -> Any:

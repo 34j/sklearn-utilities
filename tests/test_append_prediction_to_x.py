@@ -15,18 +15,14 @@ assert isinstance(y_pred, ndarray)
 
 
 def test_single() -> None:
-    X_t = AppendPredictionToXSingle(estimator=LinearRegression()).fit_transform(
-        X_train, y_train
-    )
+    X_t = AppendPredictionToXSingle(estimator=LinearRegression()).fit_transform(X_train, y_train)
     assert X_t.shape == (X_train.shape[0], X_train.shape[1] + 1)
     assert X_t.columns[-1] == "y_pred_LinearRegression_0"
     # assert assert_array_almost_equal(X_t["y_pred_LinearRegression_0"], y_pred)
 
 
 def test_multiple() -> None:
-    X_t = AppendPredictionToX(estimators=LinearRegression()).fit_transform(
-        X_train, y_train
-    )
+    X_t = AppendPredictionToX(estimators=LinearRegression()).fit_transform(X_train, y_train)
     assert X_t.shape == (X_train.shape[0], X_train.shape[1] + 1)
     assert X_t.columns[-1] == "y_pred_LinearRegression_0_0"
     # assert assert_array_almost_equal(X_t["y_pred_LinearRegression_0_0"], y_pred)

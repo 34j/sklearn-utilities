@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-from typing import Any, Callable, Sequence
+from collections.abc import Callable, Sequence
+from typing import Any, Self
 
 from pandas import DataFrame
 from sklearn.base import BaseEstimator, TransformerMixin, check_is_fitted
-from typing_extensions import Self
 
 from ..id_transformer import IdTransformer
 
@@ -30,6 +30,7 @@ class ExcludedColumnTransformerPandas(BaseEstimator, TransformerMixin):
         optional
             The columns to be excluded, by default []
             If callable, a function that takes the column names as an argument.
+
         """
         self.exclude_columns = exclude_columns
         self.estimator = estimator
@@ -47,15 +48,11 @@ class ExcludedColumnTransformerPandas(BaseEstimator, TransformerMixin):
         self.estimator.fit(X[self.feature_names_out_], **fit_params)
         return self
 
-    def transform(
-        self, X: DataFrame, y: Any = None, **transform_params: Any
-    ) -> DataFrame:
+    def transform(self, X: DataFrame, y: Any = None, **transform_params: Any) -> DataFrame:
         check_is_fitted(self)
         return self.estimator.transform(X[self.feature_names_out_], **transform_params)
 
-    def fit_transform(
-        self, X: DataFrame, y: Any = None, **fit_params: Any
-    ) -> DataFrame:
+    def fit_transform(self, X: DataFrame, y: Any = None, **fit_params: Any) -> DataFrame:
         self._fit(X)
         return self.estimator.fit_transform(X[self.feature_names_out_], y, **fit_params)
 
@@ -81,6 +78,7 @@ class IncludedColumnTransformerPandas(BaseEstimator, TransformerMixin):
         optional
             The columns to be included, by default []
             If callable, a function that takes the column names as an argument.
+
         """
         self.include_columns = include_columns
         self.estimator = estimator
@@ -99,14 +97,10 @@ class IncludedColumnTransformerPandas(BaseEstimator, TransformerMixin):
         self.estimator.fit(X[self.feature_names_out_], **fit_params)
         return self
 
-    def transform(
-        self, X: DataFrame, y: Any = None, **transform_params: Any
-    ) -> DataFrame:
+    def transform(self, X: DataFrame, y: Any = None, **transform_params: Any) -> DataFrame:
         check_is_fitted(self)
         return self.estimator.transform(X[self.feature_names_out_], **transform_params)
 
-    def fit_transform(
-        self, X: DataFrame, y: Any = None, **fit_params: Any
-    ) -> DataFrame:
+    def fit_transform(self, X: DataFrame, y: Any = None, **fit_params: Any) -> DataFrame:
         self._fit(X)
         return self.estimator.fit_transform(X[self.feature_names_out_], y, **fit_params)

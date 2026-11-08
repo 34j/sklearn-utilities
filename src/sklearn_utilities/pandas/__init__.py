@@ -8,8 +8,8 @@ from .multioutput import SmartMultioutputEstimator
 
 __all__ = [
     "DataFrameWrapper",
+    "ExcludedColumnTransformerPandas",
     "FeatureUnionPandas",
     "IncludedColumnTransformerPandas",
-    "ExcludedColumnTransformerPandas",
     "SmartMultioutputEstimator",
 ]

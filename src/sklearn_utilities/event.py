@@ -20,6 +20,7 @@ def since_event(event: Series[bool]) -> Series[float]:
         The difference between the index of the last event
         and the current index.
         If the index is a DatetimeIndex, the unit is hours.
+
     """
     event = event.astype(bool, copy=True)
     orig_idx = event.index
@@ -50,6 +51,7 @@ def until_event(event: Series[bool]) -> Series[float]:
         The difference between the index of the next event
         and the current index.
         If the index is a DatetimeIndex, the unit is hours.
+
     """
     event = event.astype(bool, copy=True)
     orig_idx = event.index

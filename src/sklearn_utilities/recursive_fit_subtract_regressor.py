@@ -1,26 +1,22 @@
 from __future__ import annotations
 
-from typing import Any, Generic, Mapping, Sequence
+from collections.abc import Mapping, Sequence
+from typing import Any, Generic, Self
 
 import numpy as np
 from joblib import Parallel, delayed
 from numpy.typing import NDArray
-from typing_extensions import Self
 
 from .estimator_wrapper import EstimatorWrapperBase
 from .types import TEstimator
 
 
-class RecursiveFitSubtractRegressor(
-    Generic[TEstimator], EstimatorWrapperBase[TEstimator]
-):
+class RecursiveFitSubtractRegressor(Generic[TEstimator], EstimatorWrapperBase[TEstimator]):
     """Regressor that fits the residual of the prediction of the previous model."""
 
     estimators: Sequence[TEstimator]
 
-    def __init__(
-        self, estimators: Sequence[TEstimator], *, n_jobs: int | None = None
-    ) -> None:
+    def __init__(self, estimators: Sequence[TEstimator], *, n_jobs: int | None = None) -> None:
         """Regressor that fits the residual of the prediction of the previous model.
 
         Parameters
@@ -30,6 +26,7 @@ class RecursiveFitSubtractRegressor(
         n_jobs : int | None, optional
             The number of jobs to run in parallel when predicting, by default None
             Note that fitting cannot be parallelized.
+
         """
         self.estimators = estimators
         self.n_jobs = n_jobs
