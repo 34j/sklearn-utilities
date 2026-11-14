@@ -33,7 +33,7 @@ dependencies = [
   "typing-extensions>=4.8",
 ]
 optional-dependencies.catboost = [
-  "catboost>=1.2.2",
+  "catboost>=1.2.10",
 ]
 optional-dependencies.seaborn = [
   "seaborn>=0.13",
