@@ -39,7 +39,7 @@ optional-dependencies.seaborn = [
   "seaborn>=0.13",
 ]
 optional-dependencies.torch = [
-  "skorch>=1",
+  "skorch>=1.4.0",
   "torch>=2.1",
 ]
 urls."Bug Tracker" = "https://github.com/34j/sklearn-utilities/issues"
